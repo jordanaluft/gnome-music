@@ -1119,26 +1119,21 @@ class PlaylistPopover(object):
     # still just work with the Albums View
     # still doesn't update automatically
 
+    @log
     def __init__(self, player):
         self.player = player
-        self.model = [] # this should be a Gio.ListStore
+        self.model = Gio.ListStore()
 
         self.popover = self.player._ui.get_object('popover')
         self.popover.set_relative_to(self.player.nowplaying_button)
 
         self.track_list = self.player._ui.get_object('popover_track_list')
-        # self.track_list.bind_model(self.model, self.create_row)
+        self.track_list.bind_model(self.model, self.create_row)
 
-    def create_list(self):
-        # this method probably will not exist since we have bound track list with a moddel
-        for data in self.model:
-            row = self.create_row(data)
-            self.track_list.add(row)
 
-        self.track_list.show_all()
-
+    @log
     def create_row(self, data):
-        name, time = data
+        name, time = data.data
         row = Gtk.ListBoxRow()
         box_track = Gtk.Box()
         row.add(box_track)
@@ -1154,14 +1149,21 @@ class PlaylistPopover(object):
 
     @log
     def update_playlist(self, player):
-        self.model = [] # clean model
-        # self.model.remove_all()
+        self.model.remove_all()
 
         # update model
         for music in player.playlist:
-            self.model.append(tuple(list(music)[0:2]))
+            data = Data(tuple(list(music)[0:2]))
+            self.model.append(data)
 
-        self.create_list()
+        self.track_list.show_all()
+
+class Data(GObject.Object):
+
+    def __init__(self, data):
+        super().__init__()
+        self.data = data
+
 
 
 class MissingCodecsDialog(Gtk.MessageDialog):
