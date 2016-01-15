@@ -57,6 +57,20 @@ logger = logging.getLogger(__name__)
 
 ART_SIZE = 34
 
+TRACKS_FIXTURE = [
+    (False, 'First Track', '2:23', True),
+    (False, 'Second Track', '2:00', True),
+    (False, 'Third Track', '3:42', True),
+    (False, 'Fourth Track', '2:00', True),
+    (False, 'Fifth Track', '4:50', True),
+    (False, 'Sixth Track', '3:31', True),
+    (True, 'Seventh Track', '2:40', False),
+    (False, 'Eighth Track', '3:45', False),
+    (False, 'Ninth Track', '4:00', False),
+    (False, 'Tenth Track', '2:50', False),
+    (False, 'Eleventh Track', '3:44', False),
+]
+
 
 class RepeatType:
     NONE = 0
@@ -144,6 +158,14 @@ class Player(GObject.GObject):
         self.playlist_delete_handler = 0
 
         self._check_last_fm()
+
+        self.popover = PlaylistPopover(self)
+        self.connect('playlist-changed', self.popover.update_playlist)
+
+        # this should be in Popover
+        self.popover_artist = self._ui.get_object('popover_artist')
+        self.popover_track_name = self._ui.get_object('popover_track_name')
+        self.popover_album_image = self._ui.get_object('popover_album_image')
 
     @log
     def _check_last_fm(self):
@@ -602,6 +624,7 @@ class Player(GObject.GObject):
             pass
         finally:
             self.artistLabel.set_label(artist)
+            self.popover_artist.set_label(artist) # this should be in PlaylistPopover
             self._currentArtist = artist
 
         album = _("Unknown Album")
@@ -612,11 +635,13 @@ class Player(GObject.GObject):
             self._currentAlbum = album
 
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
+        self.popover_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.cache.lookup(
             media, ART_SIZE, ART_SIZE, self._on_cache_lookup, None, artist, album)
 
         self._currentTitle = AlbumArtCache.get_media_title(media)
         self.titleLabel.set_label(self._currentTitle)
+        self.popover_track_name.set_label(self._currentTitle) # this should be in PlaylistPopover
 
         self._currentTimestamp = int(time.time())
 
@@ -669,6 +694,7 @@ class Player(GObject.GObject):
     def _on_cache_lookup(self, pixbuf, path, data=None):
         if pixbuf is not None:
             self.coverImg.set_from_pixbuf(pixbuf)
+            self.popover_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
         self.emit('thumbnail-updated', path)
 
     @log
@@ -698,6 +724,7 @@ class Player(GObject.GObject):
 
         self.emit('playback-status-changed')
         self.emit('playing-changed')
+
 
     @log
     def pause(self):
@@ -811,10 +838,14 @@ class Player(GObject.GObject):
         self.songPlaybackTimeLabel = self._ui.get_object('playback')
         self.songTotalTimeLabel = self._ui.get_object('duration')
         self.titleLabel = self._ui.get_object('title')
-        self.artistLabel = self._ui.get_object('artist')
+        self.artistLabel= self._ui.get_object('artist')
         self.coverImg = self._ui.get_object('cover')
         self.duration = self._ui.get_object('duration')
         self.repeatBtnImage = self._ui.get_object('playlistRepeat')
+
+        self.nowplaying_button = self._ui.get_object('nowplaying_button')
+
+
 
         if Gtk.Settings.get_default().get_property('gtk_application_prefer_dark_theme'):
             color = Gdk.RGBA(red=1.0, green=1.0, blue=1.0, alpha=1.0)
@@ -825,6 +856,7 @@ class Player(GObject.GObject):
 
         self._sync_repeat_image()
 
+        self.nowplaying_button.connect('clicked', self.on_clicked_button)
         self.prevBtn.connect('clicked', self._on_prev_btn_clicked)
         self.playBtn.connect('clicked', self._on_play_btn_clicked)
         self.nextBtn.connect('clicked', self._on_next_btn_clicked)
@@ -875,6 +907,15 @@ class Player(GObject.GObject):
     @log
     def _on_prev_btn_clicked(self, btn):
         self.play_previous()
+
+    @log
+    def on_clicked_button(self, nowplaying_button):
+        # still need be better
+        if self.popover.popover.get_visible():
+            self.popover.popover.hide()
+        else:
+            self.popover.popover.show()
+
 
     @log
     def _set_duration(self, duration):
@@ -1072,6 +1113,55 @@ class Player(GObject.GObject):
         if self.playlist.get_value(currentTrack, self.discovery_status_field) == DiscoveryStatus.FAILED:
             return None
         return self.playlist.get_value(currentTrack, self.playlistField)
+
+
+class PlaylistPopover(object):
+    # still just work with the Albums View
+    # still doesn't update automatically
+
+    def __init__(self, player):
+        self.player = player
+        self.model = [] # this should be a Gio.ListStore
+
+        self.popover = self.player._ui.get_object('popover')
+        self.popover.set_relative_to(self.player.nowplaying_button)
+
+        self.track_list = self.player._ui.get_object('popover_track_list')
+        # self.track_list.bind_model(self.model, self.create_row)
+
+    def create_list(self):
+        # this method probably will not exist since we have bound track list with a moddel
+        for data in self.model:
+            row = self.create_row(data)
+            self.track_list.add(row)
+
+        self.track_list.show_all()
+
+    def create_row(self, data):
+        name, time = data
+        row = Gtk.ListBoxRow()
+        box_track = Gtk.Box()
+        row.add(box_track)
+
+        track_label = Gtk.Label()
+        time_label = Gtk.Label()
+
+        track_label.set_markup(name)
+        time_label.set_markup(time)
+        box_track.pack_start(track_label, False, False, 0)
+        box_track.pack_end(time_label, False, False, 0)
+        return row
+
+    @log
+    def update_playlist(self, player):
+        self.model = [] # clean model
+        # self.model.remove_all()
+
+        # update model
+        for music in player.playlist:
+            self.model.append(tuple(list(music)[0:2]))
+
+        self.create_list()
 
 
 class MissingCodecsDialog(Gtk.MessageDialog):
