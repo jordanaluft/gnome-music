@@ -166,6 +166,7 @@ class Player(GObject.GObject):
         self.popover_artist = self._ui.get_object('popover_artist')
         self.popover_track_name = self._ui.get_object('popover_track_name')
         self.popover_album_image = self._ui.get_object('popover_album_image')
+        self.image8 = self._ui.get_object('image8')
 
     @log
     def _check_last_fm(self):
@@ -636,6 +637,7 @@ class Player(GObject.GObject):
 
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
         self.popover_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.image8.set_from_pixbuf(self._noArtworkIcon)
         self.cache.lookup(
             media, ART_SIZE, ART_SIZE, self._on_cache_lookup, None, artist, album)
 
@@ -695,6 +697,7 @@ class Player(GObject.GObject):
         if pixbuf is not None:
             self.coverImg.set_from_pixbuf(pixbuf)
             self.popover_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.image8.set_from_pixbuf(pixbuf)
         self.emit('thumbnail-updated', path)
 
     @log
@@ -1130,6 +1133,12 @@ class PlaylistPopover(object):
         self.track_list = self.player._ui.get_object('popover_track_list')
         self.track_list.bind_model(self.model, self.create_row)
 
+        self.stack = self.player._ui.get_object('stack3')
+        self.player.nowplaying_button.connect('clicked', self.on_clicked_stack)
+
+        self.box2 = self.player._ui.get_object('box2')
+        self.box1 = self.player._ui.get_object('box1')
+        self.popover_box_content = self.player._ui.get_object('popover_box_content')
 
     @log
     def create_row(self, data):
@@ -1157,6 +1166,17 @@ class PlaylistPopover(object):
             self.model.append(data)
 
         self.track_list.show_all()
+
+    @log
+    def on_clicked_stack(self, button):
+        value = randint(0,2)
+        if value == 0:
+            self.stack.set_visible_child(self.box2)
+        if value == 1:
+            self.stack.set_visible_child(self.box1)
+        if value == 2:
+            self.stack.set_visible_child(self.popover_box_content)
+
 
 class Data(GObject.Object):
 
