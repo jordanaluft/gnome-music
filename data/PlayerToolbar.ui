@@ -319,7 +319,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="icon_name">shuffle_button_image</property>
+                        <property name="image">shuffle_button_image</property>
                         <property name="always_show_image">True</property>
                       </object>
                       <packing>
@@ -347,7 +347,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="icon_name">repeat_son_button_image</property>
+                        <property name="image">repeat_song_button_image</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
