@@ -160,13 +160,15 @@ class Player(GObject.GObject):
         self._check_last_fm()
 
         self.popover = PlaylistPopover(self)
-        self.connect('playlist-changed', self.popover.update_playlist)
+        self.connect('playlist-changed', self.popover.update_playlist_view2)
 
         # this should be in Popover
         self.popover_view1_artist = self._ui.get_object('popover_view1_artist')
         self.popover_view1_track_name = self._ui.get_object('popover_view1_track_name')
         self.popover_view1_album_image = self._ui.get_object('popover_view1_album_image')
-
+        self.popover_view2_artist = Gtk.Label()
+        self.popover_view2_track_name = Gtk.Label()
+        self.popover_view2_album_image = Gtk.Image()
 
     @log
     def _check_last_fm(self):
@@ -626,6 +628,7 @@ class Player(GObject.GObject):
         finally:
             self.artistLabel.set_label(artist)
             self.popover_view1_artist.set_label(artist) # this should be in PlaylistPopover
+            self.popover_view2_artist.set_label(artist) #this shoould be in PlaylistPopover
             self._currentArtist = artist
 
         album = _("Unknown Album")
@@ -637,12 +640,14 @@ class Player(GObject.GObject):
 
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
         self.popover_view1_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_view2_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.cache.lookup(
             media, ART_SIZE, ART_SIZE, self._on_cache_lookup, None, artist, album)
 
         self._currentTitle = AlbumArtCache.get_media_title(media)
         self.titleLabel.set_label(self._currentTitle)
         self.popover_view1_track_name.set_label(self._currentTitle) # this should be in PlaylistPopover
+        self.popover_view2_track_name.set_label(self._currentTitle) #this should be in PlaylistPopover
 
         self._currentTimestamp = int(time.time())
 
@@ -696,6 +701,7 @@ class Player(GObject.GObject):
         if pixbuf is not None:
             self.coverImg.set_from_pixbuf(pixbuf)
             self.popover_view1_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_view2_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
         self.emit('thumbnail-updated', path)
 
     @log
@@ -1128,18 +1134,20 @@ class PlaylistPopover(object):
         self.popover = self.player._ui.get_object('popover')
         self.popover.set_relative_to(self.player.nowplaying_button)
 
-        self.track_list = self.player._ui.get_object('popover_view1_track_list')
-        self.track_list.bind_model(self.model, self.create_row)
+        self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
+        self.track_list_view2.bind_model(self.model, self.create_row_view2)
 
         self.stack = self.player._ui.get_object('stack3')
         self.player.nowplaying_button.connect('clicked', self.on_clicked_stack)
 
-        self.box2 = self.player._ui.get_object('popover_view2_box_content')
-        self.box1 = self.player._ui.get_object('popover_view3_box_content')
-        self.popover_box_content = self.player._ui.get_object('popover_view1_box_content')
+        self.popover_view2_box_content = self.player._ui.get_object('popover_view2_box_content')
+        self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
+        self.popover_view1_box_content = self.player._ui.get_object('popover_view1_box_content')
+
+        self.popover_playing_now = self.player._ui.get_object('popover_playing')
 
     @log
-    def create_row(self, data):
+    def create_row_view1(self, data):
         name, time = data.data
         row = Gtk.ListBoxRow()
         box_track = Gtk.Box()
@@ -1155,6 +1163,38 @@ class PlaylistPopover(object):
         return row
 
     @log
+    def create_row_view2(self, data):
+        name = data.data
+        artist = (self.player.popover_view2_artist)
+        row = Gtk.ListBoxRow()
+        box_track = Gtk.Box()
+        row.add(box_track)
+
+        box_label = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
+
+        box_track.add(self.popover_playing_now)
+        box_track.add(self.player.popover_view2_album_image)
+        box_track.add(box_label)
+
+        track_label = Gtk.Label()
+        track_artist = Gtk.Label()
+
+        track_label.set_markup(name)
+        track_artist.set_markup(str(artist))
+        box_label.add(track_label)
+        box_label.add(track_artist)
+
+        return row
+
+    @log
+    def update_playlist_view2(self, player):
+        self.model.remove_all()
+        for music in player.playlist:
+            data = Data(list(music)[0])
+            self.model.append(data)
+        self.track_list_view2.show_all()
+
+    @log
     def smart_playlist_row(self, data):
         name, time = data.data
 
@@ -1162,33 +1202,24 @@ class PlaylistPopover(object):
     def smart_playlist_update(self,player):
         self.model.remove_all()
 
-
-        for music in player.playlist:
-            smart_data = Data(tuple(list(music)[0]))
-            self.model.append(smart_data)
-
-
-
     @log
     def update_playlist(self, player):
         self.model.remove_all()
-
         # update model
         for music in player.playlist:
             data = Data(tuple(list(music)[0:2]))
             self.model.append(data)
+        self.track_list_view1.show_all()
 
-        self.track_list.show_all()
-
-    @log
+     @log
     def on_clicked_stack(self, button):
-        value = 0
-        if value == 0:
-            self.stack.set_visible_child(self.box2)
-        if value == 1:
-            self.stack.set_visible_child(self.box1)
-        if value == 2:
+        value = 1
+        if value == 0: # Albums playlist
             self.stack.set_visible_child(self.popover_view1_box_content)
+        if value == 1:
+            self.stack.set_visible_child(self.popover_view2_box_content)
+        if value == 2: # Smart Playlist
+            self.stack.set_visible_child(self.popover_view3_box_content)
 
 
 class Data(GObject.Object):
