@@ -163,10 +163,10 @@ class Player(GObject.GObject):
         self.connect('playlist-changed', self.popover.update_playlist)
 
         # this should be in Popover
-        self.popover_artist = self._ui.get_object('popover_artist')
-        self.popover_track_name = self._ui.get_object('popover_track_name')
-        self.popover_album_image = self._ui.get_object('popover_album_image')
-        self.image8 = self._ui.get_object('image8')
+        self.popover_view1_artist = self._ui.get_object('popover_view1_artist')
+        self.popover_view1_track_name = self._ui.get_object('popover_view1_track_name')
+        self.popover_view1_album_image = self._ui.get_object('popover_view1_album_image')
+
 
     @log
     def _check_last_fm(self):
@@ -625,7 +625,7 @@ class Player(GObject.GObject):
             pass
         finally:
             self.artistLabel.set_label(artist)
-            self.popover_artist.set_label(artist) # this should be in PlaylistPopover
+            self.popover_view1_artist.set_label(artist) # this should be in PlaylistPopover
             self._currentArtist = artist
 
         album = _("Unknown Album")
@@ -636,14 +636,13 @@ class Player(GObject.GObject):
             self._currentAlbum = album
 
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
-        self.popover_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
-        self.image8.set_from_pixbuf(self._noArtworkIcon)
+        self.popover_view1_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.cache.lookup(
             media, ART_SIZE, ART_SIZE, self._on_cache_lookup, None, artist, album)
 
         self._currentTitle = AlbumArtCache.get_media_title(media)
         self.titleLabel.set_label(self._currentTitle)
-        self.popover_track_name.set_label(self._currentTitle) # this should be in PlaylistPopover
+        self.popover_view1_track_name.set_label(self._currentTitle) # this should be in PlaylistPopover
 
         self._currentTimestamp = int(time.time())
 
@@ -696,8 +695,7 @@ class Player(GObject.GObject):
     def _on_cache_lookup(self, pixbuf, path, data=None):
         if pixbuf is not None:
             self.coverImg.set_from_pixbuf(pixbuf)
-            self.popover_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
-            self.image8.set_from_pixbuf(pixbuf)
+            self.popover_view1_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
         self.emit('thumbnail-updated', path)
 
     @log
@@ -1130,15 +1128,15 @@ class PlaylistPopover(object):
         self.popover = self.player._ui.get_object('popover')
         self.popover.set_relative_to(self.player.nowplaying_button)
 
-        self.track_list = self.player._ui.get_object('popover_track_list')
+        self.track_list = self.player._ui.get_object('popover_view1_track_list')
         self.track_list.bind_model(self.model, self.create_row)
 
         self.stack = self.player._ui.get_object('stack3')
         self.player.nowplaying_button.connect('clicked', self.on_clicked_stack)
 
-        self.box2 = self.player._ui.get_object('box2')
-        self.box1 = self.player._ui.get_object('box1')
-        self.popover_box_content = self.player._ui.get_object('popover_box_content')
+        self.box2 = self.player._ui.get_object('popover_view2_box_content')
+        self.box1 = self.player._ui.get_object('popover_view3_box_content')
+        self.popover_box_content = self.player._ui.get_object('popover_view1_box_content')
 
     @log
     def create_row(self, data):
@@ -1157,6 +1155,21 @@ class PlaylistPopover(object):
         return row
 
     @log
+    def smart_playlist_row(self, data):
+        name, time = data.data
+
+    @log
+    def smart_playlist_update(self,player):
+        self.model.remove_all()
+
+
+        for music in player.playlist:
+            smart_data = Data(tuple(list(music)[0]))
+            self.model.append(smart_data)
+
+
+
+    @log
     def update_playlist(self, player):
         self.model.remove_all()
 
@@ -1169,13 +1182,13 @@ class PlaylistPopover(object):
 
     @log
     def on_clicked_stack(self, button):
-        value = randint(0,2)
+        value = 0
         if value == 0:
             self.stack.set_visible_child(self.box2)
         if value == 1:
             self.stack.set_visible_child(self.box1)
         if value == 2:
-            self.stack.set_visible_child(self.popover_box_content)
+            self.stack.set_visible_child(self.popover_view1_box_content)
 
 
 class Data(GObject.Object):
