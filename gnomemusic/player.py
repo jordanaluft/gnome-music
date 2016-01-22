@@ -1132,22 +1132,24 @@ class PlaylistPopover(object):
     @log
     def __init__(self, player):
         self.player = player
-        self.model = Gio.ListStore()
+        self.model_view1 = Gio.ListStore()
+        self.model_view2 = Gio.ListStore()
 
         self.popover = self.player._ui.get_object('popover')
         self.popover.set_relative_to(self.player.nowplaying_button)
 
-      #  self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
-       # self.track_list_view2.bind_model(self.model, self.create_row_view2)
         self.track_list_view1 = self.player._ui.get_object('popover_view1_track_list')
-        self.track_list_view1.bind_model(self.model, self.create_row_view1)
+        self.track_list_view1.bind_model(self.model_view1, self.create_row_view1)
+
+        self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
+        self.track_list_view2.bind_model(self.model_view2, self.create_row_view2)
 
         self.stack = self.player._ui.get_object('stack3')
         self.player.nowplaying_button.connect('clicked', self.on_clicked_stack)
 
-       # self.popover_view2_box_content = self.player._ui.get_object('popover_view2_box_content')
-        #self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
         self.popover_view1_box_content = self.player._ui.get_object('popover_view1_box_content')
+        self.popover_view2_box_content = self.player._ui.get_object('popover_view2_box_content')
+        #self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
 
         self.popover_playing_now = self.player._ui.get_object('popover_playing')
         #self.popover_view3_previous_label = self.player._ui.get_object('popover_view3_previous_label')
@@ -1155,7 +1157,7 @@ class PlaylistPopover(object):
     @log
     def update_playlist(self, player):
         self.update_playlist_view1(player)
-#        self.update_playlist_view2()
+        self.update_playlist_view2(player)
 
     @log
     def create_row_view1(self, data):
@@ -1198,14 +1200,6 @@ class PlaylistPopover(object):
         return row
 
     @log
-    def update_playlist_view2(self, player):
-        self.model.remove_all()
-        for music in player.playlist:
-            data = Data(list(music)[0])
-            self.model.append(data)
-        self.track_list_view2.show_all()
-
-    @log
     def create_row_view3(self, widget):
         previous_track = self.player._get_next_track()
         previous_path = previous_track.get_path()
@@ -1214,16 +1208,24 @@ class PlaylistPopover(object):
 
     @log
     def update_playlist_view1(self, player):
-        self.model.remove_all()
+        self.model_view1.remove_all()
         # update model
         for music in player.playlist:
             data = Data(tuple(list(music)[0:2]))
-            self.model.append(data)
+            self.model_view1.append(data)
         self.track_list_view1.show_all()
 
     @log
+    def update_playlist_view2(self, player):
+        self.model_view2.remove_all()
+        for music in player.playlist:
+            data = Data(list(music)[0])
+            self.model_view2.append(data)
+        self.track_list_view2.show_all()
+
+    @log
     def on_clicked_stack(self, button):
-        value = 0
+        value = 1
         if value == 0: # Albums playlist
             self.stack.set_visible_child(self.popover_view1_box_content)
         if value == 1:
