@@ -160,7 +160,9 @@ class Player(GObject.GObject):
         self._check_last_fm()
 
         self.popover = PlaylistPopover(self)
-        self.connect('playlist-changed', self.popover.update_playlist_view2)
+        self.connect('playlist-changed', self.popover.update_playlist_view1)
+        # self.connect('playlist-changed', self.popover.update_playlist_view2)
+       # self.connect('playing-changed', self.popover.create_row_view3)
 
         # this should be in Popover
         self.popover_view1_artist = self._ui.get_object('popover_view1_artist')
@@ -1134,17 +1136,21 @@ class PlaylistPopover(object):
         self.popover = self.player._ui.get_object('popover')
         self.popover.set_relative_to(self.player.nowplaying_button)
 
-        self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
-        self.track_list_view2.bind_model(self.model, self.create_row_view2)
+      #  self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
+       # self.track_list_view2.bind_model(self.model, self.create_row_view2)
+        self.track_list_view1 = self.player._ui.get_object('popover_view1_track_list')
+        self.track_list_view1.bind_model(self.model, self.create_row_view1)
 
         self.stack = self.player._ui.get_object('stack3')
         self.player.nowplaying_button.connect('clicked', self.on_clicked_stack)
 
-        self.popover_view2_box_content = self.player._ui.get_object('popover_view2_box_content')
-        self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
+       # self.popover_view2_box_content = self.player._ui.get_object('popover_view2_box_content')
+        #self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
         self.popover_view1_box_content = self.player._ui.get_object('popover_view1_box_content')
 
         self.popover_playing_now = self.player._ui.get_object('popover_playing')
+        #self.popover_view3_previous_label = self.player._ui.get_object('popover_view3_previous_label')
+
 
     @log
     def create_row_view1(self, data):
@@ -1179,8 +1185,8 @@ class PlaylistPopover(object):
         track_label = Gtk.Label()
         track_artist = Gtk.Label()
 
-        track_label.set_markup(name)
-        track_artist.set_markup(str(artist))
+        track_label.set_markup(str(name))
+
         box_label.add(track_label)
         box_label.add(track_artist)
 
@@ -1195,15 +1201,14 @@ class PlaylistPopover(object):
         self.track_list_view2.show_all()
 
     @log
-    def smart_playlist_row(self, data):
-        name, time = data.data
+    def create_row_view3(self, widget):
+        previous_track = self.player._get_next_track()
+        previous_path = previous_track.get_path()
+        previous_path.prev()
+        popover_view3_previous_label.set_markup(list(self.player.playlist[previous_path]))
 
     @log
-    def smart_playlist_update(self,player):
-        self.model.remove_all()
-
-    @log
-    def update_playlist(self, player):
+    def update_playlist_view1(self, player):
         self.model.remove_all()
         # update model
         for music in player.playlist:
@@ -1211,9 +1216,9 @@ class PlaylistPopover(object):
             self.model.append(data)
         self.track_list_view1.show_all()
 
-     @log
+    @log
     def on_clicked_stack(self, button):
-        value = 1
+        value = 0
         if value == 0: # Albums playlist
             self.stack.set_visible_child(self.popover_view1_box_content)
         if value == 1:
