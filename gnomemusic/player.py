@@ -169,6 +169,9 @@ class Player(GObject.GObject):
         self.popover_view2_artist = Gtk.Label()
         self.popover_view2_track_name = Gtk.Label()
         self.popover_view2_album_image = Gtk.Image()
+        self.popover_view3_previous_album_image = self._ui.get_object('popover_view3_previous_album_image')
+        self.popover_view3_now_album_image = self._ui.get_object('popover_view3_now_album_image')
+        self.popover_view3_next_album_image = self._ui.get_object('popover_view3_next_album_image')
 
     @log
     def _check_last_fm(self):
@@ -641,6 +644,10 @@ class Player(GObject.GObject):
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
         self.popover_view1_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.popover_view2_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_view3_previous_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_view3_now_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_view3_next_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+
         self.cache.lookup(
             media, ART_SIZE, ART_SIZE, self._on_cache_lookup, None, artist, album)
 
@@ -702,6 +709,9 @@ class Player(GObject.GObject):
             self.coverImg.set_from_pixbuf(pixbuf)
             self.popover_view1_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
             self.popover_view2_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_view3_previous_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_view3_now_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_view3_next_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
         self.emit('thumbnail-updated', path)
 
     @log
@@ -1147,10 +1157,13 @@ class PlaylistPopover(object):
 
         self.popover_view1_box_content = self.player._ui.get_object('popover_view1_box_content')
         self.popover_view2_box_content = self.player._ui.get_object('popover_view2_box_content')
-        #self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
+        self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
 
         self.popover_playing_now = self.player._ui.get_object('popover_playing')
-        #self.popover_view3_previous_label = self.player._ui.get_object('popover_view3_previous_label')
+
+        self.popover_view3_previous_track_name = self.player._ui.get_object('popover_view3_previous_track_name')
+        self.popover_view3_now_track_name = self.player._ui.get_object('popover_view3_now_track_name')
+        self.popover_view3_next_track_name = self.player._ui.get_object('popover_view3_next_track_name')
 
     @log
     def update_playlist(self, player):
@@ -1183,6 +1196,7 @@ class PlaylistPopover(object):
         row.add(box_track)
 
         box_label = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
+
 
         box_track.add(self.popover_playing_now)
         box_track.add(self.player.popover_view2_album_image)
@@ -1217,14 +1231,21 @@ class PlaylistPopover(object):
 
     @log
     def update_view3(self, player):
-        previous_track = player._get_next_track()
+        previous_track = player._get_previous_track()
         previous_path = previous_track.get_path()
         previous_path.prev()
-        popover_view3_previous_label.set_markup(list(player.playlist[previous_path]))
+        self.popover_view3_previous_track_name.set_text(str(list(player.playlist[previous_path])[0]))
+
+        # need improve now_track
+
+        next_track = player._get_next_track()
+        next_path = next_track.get_path()
+        next_path.next()
+        self.popover_view3_next_track_name.set_text(str(list(player.playlist[next_path])[0]))
 
     @log
     def on_clicked_stack(self, button):
-        value = 1
+        value = randint(0,2)
         if value == 0: # Albums playlist
             self.stack.set_visible_child(self.popover_view1_box_content)
         if value == 1:
