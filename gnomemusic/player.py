@@ -160,8 +160,8 @@ class Player(GObject.GObject):
         self._check_last_fm()
 
         self.popover = PlaylistPopover(self)
-        self.connect('playlist-changed', self.popover.update_playlist_view1)
-        # self.connect('playlist-changed', self.popover.update_playlist_view2)
+        self.connect('playlist-changed', self.popover.update_playlist)
+
        # self.connect('playing-changed', self.popover.create_row_view3)
 
         # this should be in Popover
@@ -1124,6 +1124,7 @@ class Player(GObject.GObject):
         return self.playlist.get_value(currentTrack, self.playlistField)
 
 
+
 class PlaylistPopover(object):
     # still just work with the Albums View
     # still doesn't update automatically
@@ -1151,6 +1152,10 @@ class PlaylistPopover(object):
         self.popover_playing_now = self.player._ui.get_object('popover_playing')
         #self.popover_view3_previous_label = self.player._ui.get_object('popover_view3_previous_label')
 
+    @log
+    def update_playlist(self, player):
+        self.update_playlist_view1(player)
+#        self.update_playlist_view2()
 
     @log
     def create_row_view1(self, data):
