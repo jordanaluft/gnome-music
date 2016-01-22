@@ -162,8 +162,6 @@ class Player(GObject.GObject):
         self.popover = PlaylistPopover(self)
         self.connect('playlist-changed', self.popover.update_playlist)
 
-       # self.connect('playing-changed', self.popover.create_row_view3)
-
         # this should be in Popover
         self.popover_view1_artist = self._ui.get_object('popover_view1_artist')
         self.popover_view1_track_name = self._ui.get_object('popover_view1_track_name')
@@ -1158,6 +1156,7 @@ class PlaylistPopover(object):
     def update_playlist(self, player):
         self.update_playlist_view1(player)
         self.update_playlist_view2(player)
+        self.update_view3(player)
 
     @log
     def create_row_view1(self, data):
@@ -1200,13 +1199,6 @@ class PlaylistPopover(object):
         return row
 
     @log
-    def create_row_view3(self, widget):
-        previous_track = self.player._get_next_track()
-        previous_path = previous_track.get_path()
-        previous_path.prev()
-        popover_view3_previous_label.set_markup(list(self.player.playlist[previous_path]))
-
-    @log
     def update_playlist_view1(self, player):
         self.model_view1.remove_all()
         # update model
@@ -1222,6 +1214,13 @@ class PlaylistPopover(object):
             data = Data(list(music)[0])
             self.model_view2.append(data)
         self.track_list_view2.show_all()
+
+    @log
+    def update_view3(self, player):
+        previous_track = player._get_next_track()
+        previous_path = previous_track.get_path()
+        previous_path.prev()
+        popover_view3_previous_label.set_markup(list(player.playlist[previous_path]))
 
     @log
     def on_clicked_stack(self, button):
