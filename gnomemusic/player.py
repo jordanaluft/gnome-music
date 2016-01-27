@@ -166,9 +166,9 @@ class Player(GObject.GObject):
         self.popover_albums_view_artist = self._ui.get_object('popover_albums_view_artist')
         self.popover_albums_view_track_name = self._ui.get_object('popover_albums_view_track_name')
         self.popover_albums_view_album_image = self._ui.get_object('popover_albums_view_album_image')
-        self.popover_view2_artist = Gtk.Label()
-        self.popover_view2_track_name = Gtk.Label()
-        self.popover_view2_album_image = Gtk.Image()
+        self.popover_default_view_artist = Gtk.Label()
+        self.popover_default_view_track_name = Gtk.Label()
+        self.popover_default_view_album_image = Gtk.Image()
         self.popover_view3_previous_album_image = self._ui.get_object('popover_view3_previous_album_image')
         self.popover_view3_now_album_image = self._ui.get_object('popover_view3_now_album_image')
         self.popover_view3_next_album_image = self._ui.get_object('popover_view3_next_album_image')
@@ -631,7 +631,7 @@ class Player(GObject.GObject):
         finally:
             self.artistLabel.set_label(artist)
             self.popover_albums_view_artist.set_label(artist) # this should be in PlaylistPopover
-            self.popover_view2_artist.set_label(artist) #this shoould be in PlaylistPopover
+            self.popover_default_view_artist.set_label(artist) #this shoould be in PlaylistPopover
             self._currentArtist = artist
 
         album = _("Unknown Album")
@@ -643,7 +643,7 @@ class Player(GObject.GObject):
 
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
         self.popover_albums_view_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
-        self.popover_view2_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_default_view_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.popover_view3_previous_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.popover_view3_now_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.popover_view3_next_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
@@ -654,7 +654,7 @@ class Player(GObject.GObject):
         self._currentTitle = AlbumArtCache.get_media_title(media)
         self.titleLabel.set_label(self._currentTitle)
         self.popover_albums_view_track_name.set_label(self._currentTitle) # this should be in PlaylistPopover
-        self.popover_view2_track_name.set_label(self._currentTitle) #this should be in PlaylistPopover
+        self.popover_default_view_track_name.set_label(self._currentTitle) #this should be in PlaylistPopover
 
         self._currentTimestamp = int(time.time())
 
@@ -708,7 +708,7 @@ class Player(GObject.GObject):
         if pixbuf is not None:
             self.coverImg.set_from_pixbuf(pixbuf)
             self.popover_albums_view_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
-            self.popover_view2_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_default_view_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
             self.popover_view3_previous_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
             self.popover_view3_now_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
             self.popover_view3_next_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
@@ -1142,7 +1142,7 @@ class PlaylistPopover(object):
     def __init__(self, player):
         self.player = player
         self.model_albums_view = Gio.ListStore()
-        self.model_view2 = Gio.ListStore()
+        self.model_default_view = Gio.ListStore()
 
         self.popover = self.player._ui.get_object('popover')
         self.popover.set_relative_to(self.player.nowplaying_button)
@@ -1150,8 +1150,8 @@ class PlaylistPopover(object):
         self.track_list_albums_view = self.player._ui.get_object('popover_albums_view_track_list')
         self.track_list_albums_view.bind_model(self.model_albums_view, self.create_row_albums)
 
-        self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
-        self.track_list_view2.bind_model(self.model_view2, self.create_row_view2)
+        self.track_list_default_view = self.player._ui.get_object('popover_default_view_track_list')
+        self.track_list_default_view.bind_model(self.model_default_view, self.create_row_default_view)
 
         self.stack = self.player._ui.get_object('stack3')
 
@@ -1173,7 +1173,7 @@ class PlaylistPopover(object):
             self.update_view3(player)
             self.stack.set_visible_child_name('playlists')
         else:
-            self.update_view2(player)
+            self.update_default_view(player)
             self.stack.set_visible_child_name('default')
 
     @log
@@ -1193,9 +1193,9 @@ class PlaylistPopover(object):
         return row
 
     @log
-    def create_row_view2(self, data):
+    def create_row_default_view(self, data):
         name = data.data
-        artist = (self.player.popover_view2_artist)
+        artist = (self.player.popover_default_view_artist)
         row = Gtk.ListBoxRow()
         box_track = Gtk.Box()
         row.add(box_track)
@@ -1203,7 +1203,7 @@ class PlaylistPopover(object):
         box_label = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
 
         box_track.add(self.popover_playing_now)
-        box_track.add(self.player.popover_view2_album_image)
+        box_track.add(self.player.popover_default_view_album_image)
         box_track.add(box_label)
 
         track_label = Gtk.Label()
@@ -1226,12 +1226,12 @@ class PlaylistPopover(object):
         self.track_list_albums_view.show_all()
 
     @log
-    def update_view2(self, player):
-        self.model_view2.remove_all()
+    def update_default_view(self, player):
+        self.model_default_view.remove_all()
         for music in player.playlist:
             data = Data(list(music)[0])
-            self.model_view2.append(data)
-        self.track_list_view2.show_all()
+            self.model_default_view.append(data)
+        self.track_list_default_view.show_all()
 
     @log
     def update_view3(self, player):

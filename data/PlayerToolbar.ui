@@ -203,22 +203,22 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="popover_view2_box_content">
+              <object class="GtkBox" id="popover_default_view_box_content">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="popover_view2_scrolledwindow">
+                  <object class="GtkScrolledWindow" id="popover_default_view_scrolledwindow">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">never</property>
                     <property name="shadow_type">in</property>
                     <child>
-                      <object class="GtkViewport" id="popover_view2_viewport">
+                      <object class="GtkViewport" id="popover_default_view_viewport">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkListBox" id="popover_view2_track_list">
+                          <object class="GtkListBox" id="popover_default_view_track_list">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                           </object>
@@ -233,13 +233,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="popover_view2_box_buttons">
+                  <object class="GtkBox" id="popover_default_view_box_buttons">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">end</property>
                     <child>
-                      <object class="GtkToggleButton" id="popover_view2_shuffle_button">
+                      <object class="GtkToggleButton" id="popover_default_view_shuffle_button">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -253,7 +253,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToggleButton" id="popover_view2_repeat_button">
+                      <object class="GtkToggleButton" id="popover_default_view_repeat_button">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
