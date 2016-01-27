@@ -51,17 +51,17 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkBox" id="popover_view1_box_content">
+              <object class="GtkBox" id="popover_albums_view_box_content">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkBox" id="popover_view1_box_left">
+                  <object class="GtkBox" id="popover_albums_view_box_left">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkImage" id="popover_view1_album_image">
+                      <object class="GtkImage" id="popover_albums_view_album_image">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="pixbuf">album.png</property>
@@ -74,7 +74,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="popover_view1_track_name">
+                      <object class="GtkLabel" id="popover_albums_view_track_name">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Track Name</property>
@@ -90,7 +90,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="popover_view1_artist">
+                      <object class="GtkLabel" id="popover_albums_view_artist">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Track Artist</property>
@@ -106,12 +106,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="popover_view1_box_buttons">
+                      <object class="GtkBox" id="popover_albums_view_box_buttons">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">center</property>
                         <child>
-                          <object class="GtkToggleButton" id="popover_view1_shuffle_button">
+                          <object class="GtkToggleButton" id="popover_albums_view_shuffle_button">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -125,7 +125,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkToggleButton" id="popover_view1_repeat_button">
+                          <object class="GtkToggleButton" id="popover_albums_view_repeat_button">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -139,7 +139,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkToggleButton" id="popover_view1_repeat_song_button">
+                          <object class="GtkToggleButton" id="popover_albums_view_repeat_song_button">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -172,7 +172,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow" id="popover_view1_scrolledwindow">
+                  <object class="GtkScrolledWindow" id="popover_albums_view_scrolledwindow">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">never</property>
@@ -182,7 +182,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkListBox" id="popover_view1_track_list">
+                          <object class="GtkListBox" id="popover_albums_view_track_list">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                           </object>

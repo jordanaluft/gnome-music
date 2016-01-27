@@ -163,9 +163,9 @@ class Player(GObject.GObject):
         self.connect('playlist-changed', self.popover.update_playlist)
 
         # this should be in Popover
-        self.popover_albums_view_artist = self._ui.get_object('popover_view1_artist')
-        self.popover_albums_view_track_name = self._ui.get_object('popover_view1_track_name')
-        self.popover_albums_view_album_image = self._ui.get_object('popover_view1_album_image')
+        self.popover_albums_view_artist = self._ui.get_object('popover_albums_view_artist')
+        self.popover_albums_view_track_name = self._ui.get_object('popover_albums_view_track_name')
+        self.popover_albums_view_album_image = self._ui.get_object('popover_albums_view_album_image')
         self.popover_view2_artist = Gtk.Label()
         self.popover_view2_track_name = Gtk.Label()
         self.popover_view2_album_image = Gtk.Image()
@@ -1147,7 +1147,7 @@ class PlaylistPopover(object):
         self.popover = self.player._ui.get_object('popover')
         self.popover.set_relative_to(self.player.nowplaying_button)
 
-        self.track_list_albums_view = self.player._ui.get_object('popover_view1_track_list')
+        self.track_list_albums_view = self.player._ui.get_object('popover_albums_view_track_list')
         self.track_list_albums_view.bind_model(self.model_albums_view, self.create_row_albums)
 
         self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
