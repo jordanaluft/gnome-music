@@ -1133,6 +1133,7 @@ class Player(GObject.GObject):
 
 
 
+
 class PlaylistPopover(object):
     # still just work with the Albums View
     # still doesn't update automatically
@@ -1147,17 +1148,12 @@ class PlaylistPopover(object):
         self.popover.set_relative_to(self.player.nowplaying_button)
 
         self.track_list_view1 = self.player._ui.get_object('popover_view1_track_list')
-        self.track_list_view1.bind_model(self.model_view1, self.create_row_view1)
+        self.track_list_view1.bind_model(self.model_view1, self.create_row_albums)
 
         self.track_list_view2 = self.player._ui.get_object('popover_view2_track_list')
         self.track_list_view2.bind_model(self.model_view2, self.create_row_view2)
 
         self.stack = self.player._ui.get_object('stack3')
-        self.player.nowplaying_button.connect('clicked', self.on_clicked_stack)
-
-        self.popover_view1_box_content = self.player._ui.get_object('popover_view1_box_content')
-        self.popover_view2_box_content = self.player._ui.get_object('popover_view2_box_content')
-        self.popover_view3_box_content = self.player._ui.get_object('popover_view3_box_content')
 
         self.popover_playing_now = self.player._ui.get_object('popover_playing')
 
@@ -1165,14 +1161,24 @@ class PlaylistPopover(object):
         self.popover_view3_now_track_name = self.player._ui.get_object('popover_view3_now_track_name')
         self.popover_view3_next_track_name = self.player._ui.get_object('popover_view3_next_track_name')
 
-    @log
-    def update_playlist(self, player):
-        self.update_playlist_view1(player)
-        self.update_playlist_view2(player)
-        self.update_view3(player)
 
     @log
-    def create_row_view1(self, data):
+    def update_playlist(self, player):
+        view_name = self.player._parent_window.get_current_view_name()
+
+        if view_name == 'albums':
+            self.update_view1(player)
+            self.stack.set_visible_child_name('albums')
+            print('aqui')
+        if view_name == 'playlists':
+            self.update_view3(player)
+            self.stack.set_visible_child_name('default')
+        else:
+            self.update_view2(player)
+            self.stack.set_visible_child_name('playlists')
+
+    @log
+    def create_row_albums(self, data):
         name, time = data.data
         row = Gtk.ListBoxRow()
         box_track = Gtk.Box()
@@ -1197,7 +1203,6 @@ class PlaylistPopover(object):
 
         box_label = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
 
-
         box_track.add(self.popover_playing_now)
         box_track.add(self.player.popover_view2_album_image)
         box_track.add(box_label)
@@ -1213,7 +1218,7 @@ class PlaylistPopover(object):
         return row
 
     @log
-    def update_playlist_view1(self, player):
+    def update_view1(self, player):
         self.model_view1.remove_all()
         # update model
         for music in player.playlist:
@@ -1222,7 +1227,7 @@ class PlaylistPopover(object):
         self.track_list_view1.show_all()
 
     @log
-    def update_playlist_view2(self, player):
+    def update_view2(self, player):
         self.model_view2.remove_all()
         for music in player.playlist:
             data = Data(list(music)[0])
@@ -1243,15 +1248,6 @@ class PlaylistPopover(object):
         next_path.next()
         self.popover_view3_next_track_name.set_text(str(list(player.playlist[next_path])[0]))
 
-    @log
-    def on_clicked_stack(self, button):
-        value = randint(0,2)
-        if value == 0: # Albums playlist
-            self.stack.set_visible_child(self.popover_view1_box_content)
-        if value == 1:
-            self.stack.set_visible_child(self.popover_view2_box_content)
-        if value == 2: # Smart Playlist
-            self.stack.set_visible_child(self.popover_view3_box_content)
 
 
 class Data(GObject.Object):
