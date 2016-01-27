@@ -159,7 +159,7 @@ class Player(GObject.GObject):
 
         self._check_last_fm()
 
-        self.playbackPopover = PlaylistPopover(self)
+        self.playbackPopover = PlaybackPopover(self)
         self.connect('playlist-changed', self.playbackPopover.update_playlist)
 
         # this should be in PlaybackPopover
@@ -1134,7 +1134,7 @@ class Player(GObject.GObject):
 
 
 
-class PlaylistPopover(object):
+class PlaybackPopover(object):
     # still just work with the Albums View
     # still doesn't update automatically
 
