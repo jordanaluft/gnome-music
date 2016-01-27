@@ -1169,12 +1169,12 @@ class PlaylistPopover(object):
         if view_name == 'albums':
             self.update_albums_view(player)
             self.stack.set_visible_child_name('albums')
-        if view_name == 'playlists':
+        elif view_name == 'playlists':
             self.update_view3(player)
-            self.stack.set_visible_child_name('default')
+            self.stack.set_visible_child_name('playlists')
         else:
             self.update_view2(player)
-            self.stack.set_visible_child_name('playlists')
+            self.stack.set_visible_child_name('default')
 
     @log
     def create_row_albums(self, data):
