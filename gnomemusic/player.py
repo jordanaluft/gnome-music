@@ -169,9 +169,9 @@ class Player(GObject.GObject):
         self.popover_default_view_artist = Gtk.Label()
         self.popover_default_view_track_name = Gtk.Label()
         self.popover_default_view_album_image = Gtk.Image()
-        self.popover_view3_previous_album_image = self._ui.get_object('popover_view3_previous_album_image')
-        self.popover_view3_now_album_image = self._ui.get_object('popover_view3_now_album_image')
-        self.popover_view3_next_album_image = self._ui.get_object('popover_view3_next_album_image')
+        self.popover_playlists_view_previous_album_image = self._ui.get_object('popover_playlists_view_previous_album_image')
+        self.popover_playlists_view_now_album_image = self._ui.get_object('popover_playlists_view_now_album_image')
+        self.popover_playlists_view_next_album_image = self._ui.get_object('popover_playlists_view_next_album_image')
 
     @log
     def _check_last_fm(self):
@@ -644,9 +644,9 @@ class Player(GObject.GObject):
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
         self.popover_albums_view_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
         self.popover_default_view_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
-        self.popover_view3_previous_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
-        self.popover_view3_now_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
-        self.popover_view3_next_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_playlists_view_previous_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_playlists_view_now_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
+        self.popover_playlists_view_next_album_image.set_from_pixbuf(self._noArtworkIcon) # this should be in PlaylistPopover
 
         self.cache.lookup(
             media, ART_SIZE, ART_SIZE, self._on_cache_lookup, None, artist, album)
@@ -709,9 +709,9 @@ class Player(GObject.GObject):
             self.coverImg.set_from_pixbuf(pixbuf)
             self.popover_albums_view_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
             self.popover_default_view_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
-            self.popover_view3_previous_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
-            self.popover_view3_now_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
-            self.popover_view3_next_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_playlists_view_previous_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_playlists_view_now_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
+            self.popover_playlists_view_next_album_image.set_from_pixbuf(pixbuf) # this should be in PlaylistPopover
         self.emit('thumbnail-updated', path)
 
     @log
@@ -1157,9 +1157,9 @@ class PlaylistPopover(object):
 
         self.popover_playing_now = self.player._ui.get_object('popover_playing')
 
-        self.popover_view3_previous_track_name = self.player._ui.get_object('popover_view3_previous_track_name')
-        self.popover_view3_now_track_name = self.player._ui.get_object('popover_view3_now_track_name')
-        self.popover_view3_next_track_name = self.player._ui.get_object('popover_view3_next_track_name')
+        self.popover_playlists_view_previous_track_name = self.player._ui.get_object('popover_playlists_view_previous_track_name')
+        self.popover_playlists_view_now_track_name = self.player._ui.get_object('popover_playlists_view_now_track_name')
+        self.popover_playlists_view_next_track_name = self.player._ui.get_object('popover_playlists_view_next_track_name')
 
 
     @log
@@ -1170,7 +1170,7 @@ class PlaylistPopover(object):
             self.update_albums_view(player)
             self.stack.set_visible_child_name('albums')
         elif view_name == 'playlists':
-            self.update_view3(player)
+            self.update_playlists_view(player)
             self.stack.set_visible_child_name('playlists')
         else:
             self.update_default_view(player)
@@ -1234,18 +1234,18 @@ class PlaylistPopover(object):
         self.track_list_default_view.show_all()
 
     @log
-    def update_view3(self, player):
+    def update_playlists_view(self, player):
         previous_track = player._get_previous_track()
         previous_path = previous_track.get_path()
         previous_path.prev()
-        self.popover_view3_previous_track_name.set_text(str(list(player.playlist[previous_path])[0]))
+        self.popover_playlists_view_previous_track_name.set_text(str(list(player.playlist[previous_path])[0]))
 
         # need improve now_track
 
         next_track = player._get_next_track()
         next_path = next_track.get_path()
         next_path.next()
-        self.popover_view3_next_track_name.set_text(str(list(player.playlist[next_path])[0]))
+        self.popover_playlists_view_next_track_name.set_text(str(list(player.playlist[next_path])[0]))
 
 
 
