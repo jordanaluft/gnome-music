@@ -293,8 +293,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">playlists</property>
-                <property name="title" translatable="yes">playlists</property>
+                <property name="name">default</property>
+                <property name="title" translatable="yes">default</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -575,8 +575,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">default</property>
-                <property name="title" translatable="yes">default</property>
+                <property name="name">playlists</property>
+                <property name="title" translatable="yes">playlists</property>
                 <property name="position">2</property>
               </packing>
             </child>
