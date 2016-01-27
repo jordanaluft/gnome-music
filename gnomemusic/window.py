@@ -510,3 +510,7 @@ class Window(Gtk.ApplicationWindow):
             self.toolbar.set_selection_mode(False)
 
         self._stack.get_visible_child().get_selected_tracks(callback)
+
+    @log
+    def get_current_view_name(self):
+        return self._stack.get_visible_child_name()
