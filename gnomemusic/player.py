@@ -57,21 +57,6 @@ logger = logging.getLogger(__name__)
 
 ART_SIZE = 34
 
-TRACKS_FIXTURE = [
-    (False, 'First Track', '2:23', True),
-    (False, 'Second Track', '2:00', True),
-    (False, 'Third Track', '3:42', True),
-    (False, 'Fourth Track', '2:00', True),
-    (False, 'Fifth Track', '4:50', True),
-    (False, 'Sixth Track', '3:31', True),
-    (True, 'Seventh Track', '2:40', False),
-    (False, 'Eighth Track', '3:45', False),
-    (False, 'Ninth Track', '4:00', False),
-    (False, 'Tenth Track', '2:50', False),
-    (False, 'Eleventh Track', '3:44', False),
-]
-
-
 class RepeatType:
     NONE = 0
     SONG = 1
@@ -1173,8 +1158,12 @@ class PlaybackPopover(object):
             self.update_playlists_view(player)
             self.stack.set_visible_child_name('playlists')
         else:
-            self.update_default_view(player)
-            self.stack.set_visible_child_name('default')
+            if view_name == 'songs':
+                self.update_default_view_songs(player)
+                self.stack.set_visible_child_name('default')
+            else:
+                self.update_default_view(player)
+                self.stack.set_visible_child_name('default')
 
     @log
     def create_row_albums(self, data):
@@ -1223,13 +1212,22 @@ class PlaybackPopover(object):
         for music in player.playlist:
             data = Data(tuple(list(music)[0:2]))
             self.model_albums_view.append(data)
+
         self.track_list_albums_view.show_all()
+
+    @log
+    def update_default_view_songs(self, player):
+        self.model_default_view.remove_all()
+        for music in player.playlist:
+            data = Data(tuple(music)[2:4])
+            self.model_default_view.append(data)
+        self.track_list_default_view.show_all()
 
     @log
     def update_default_view(self, player):
         self.model_default_view.remove_all()
         for music in player.playlist:
-            data = Data(list(music)[0])
+            data = Data(tuple(music)[0])
             self.model_default_view.append(data)
         self.track_list_default_view.show_all()
 
@@ -1241,6 +1239,7 @@ class PlaybackPopover(object):
         self.playbackPopover_playlists_view_previous_track_name.set_text(str(list(player.playlist[previous_path])[0]))
 
         # need improve now_track
+
 
         next_track = player._get_next_track()
         next_path = next_track.get_path()
