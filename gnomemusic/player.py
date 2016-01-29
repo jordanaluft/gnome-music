@@ -615,6 +615,7 @@ class Player(GObject.GObject):
             pass
         finally:
             self.artistLabel.set_label(artist)
+
             self.playbackPopover_albums_view_artist.set_label(artist) # this should be in playbackPopover
             self.playbackPopover_default_view_artist.set_label(artist) #this shoould be in playbackPopover
             self._currentArtist = artist
@@ -913,10 +914,10 @@ class Player(GObject.GObject):
     @log
     def on_clicked_button(self, nowplaying_button):
         # still need be better
-        if self.playbackPopover.playbackPopover.get_visible():
-            self.playbackPopover.playbackPopover.hide()
+        if self.playbackPopover.popover.get_visible():
+            self.playbackPopover.popover.hide()
         else:
-            self.playbackPopover.playbackPopover.show()
+            self.playbackPopover.popover.show()
 
 
     @log
@@ -1118,7 +1119,6 @@ class Player(GObject.GObject):
 
 
 
-
 class PlaybackPopover(object):
     # still just work with the Albums View
     # still doesn't update automatically
@@ -1129,22 +1129,22 @@ class PlaybackPopover(object):
         self.model_albums_view = Gio.ListStore()
         self.model_default_view = Gio.ListStore()
 
-        self.playbackPopover = self.player._ui.get_object('playbackPopover')
-        self.playbackPopover.set_relative_to(self.player.nowplaying_button)
+        self.popover = self.player._ui.get_object('playbackPopover')
+        self.popover.set_relative_to(self.player.nowplaying_button)
 
         self.track_list_albums_view = self.player._ui.get_object('playbackPopover_albums_view_track_list')
-        self.track_list_albums_view.bind_model(self.model_albums_view, self.create_row_albums)
+        self.track_list_albums_view.bind_model(self.model_albums_view, self.create_albums_row)
 
         self.track_list_default_view = self.player._ui.get_object('playbackPopover_default_view_track_list')
-        self.track_list_default_view.bind_model(self.model_default_view, self.create_row_default_view)
+        self.track_list_default_view.bind_model(self.model_default_view, self.create_default_row)
 
         self.stack = self.player._ui.get_object('stack3')
 
-        self.playbackPopover_playing_now = self.player._ui.get_object('playbackPopover_playing')
+        self.now_playing = self.player._ui.get_object('playbackPopover_playing')
 
-        self.playbackPopover_playlists_view_previous_track_name = self.player._ui.get_object('playbackPopover_playlists_view_previous_track_name')
-        self.playbackPopover_playlists_view_now_track_name = self.player._ui.get_object('playbackPopover_playlists_view_now_track_name')
-        self.playbackPopover_playlists_view_next_track_name = self.player._ui.get_object('playbackPopover_playlists_view_next_track_name')
+        self.playlists_view_previous_track_name = self.player._ui.get_object('playbackPopover_playlists_view_previous_track_name')
+        self.playlists_view_now_track_name = self.player._ui.get_object('playbackPopover_playlists_view_now_track_name')
+        self.playlists_view_next_track_name = self.player._ui.get_object('playbackPopover_playlists_view_next_track_name')
 
 
     @log
@@ -1153,20 +1153,19 @@ class PlaybackPopover(object):
 
         if view_name == 'albums':
             self.update_albums_view(player)
-            self.stack.set_visible_child_name('albums')
         elif view_name == 'playlists':
             self.update_playlists_view(player)
-            self.stack.set_visible_child_name('playlists')
-        else:
-            if view_name == 'songs':
-                self.update_default_view_songs(player)
-                self.stack.set_visible_child_name('default')
-            else:
-                self.update_default_view(player)
-                self.stack.set_visible_child_name('default')
+        elif view_name == 'songs':
+            self.update_songs_view(player)
+            view_name = 'default'
+        elif view_name == 'artists':
+            self.update_artists_view(player)
+            view_name = 'default'
+
+        self.stack.set_visible_child_name(view_name)
 
     @log
-    def create_row_albums(self, data):
+    def create_albums_row(self, data):
         name, time = data.data
         row = Gtk.ListBoxRow()
         box_track = Gtk.Box()
@@ -1181,17 +1180,17 @@ class PlaybackPopover(object):
         box_track.pack_end(time_label, False, False, 0)
         return row
 
+
     @log
-    def create_row_default_view(self, data):
-        name = data.data
-        artist = (self.player.playbackPopover_default_view_artist)
+    def create_default_row(self, data):
+        name, artist = data.data
         row = Gtk.ListBoxRow()
         box_track = Gtk.Box()
         row.add(box_track)
 
         box_label = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
 
-        box_track.add(self.playbackPopover_playing_now)
+        box_track.add(self.now_playing)
         box_track.add(self.player.playbackPopover_default_view_album_image)
         box_track.add(box_label)
 
@@ -1199,6 +1198,7 @@ class PlaybackPopover(object):
         track_artist = Gtk.Label()
 
         track_label.set_markup(str(name))
+        track_artist.set_markup(str(artist))
 
         box_label.add(track_label)
         box_label.add(track_artist)
@@ -1212,11 +1212,10 @@ class PlaybackPopover(object):
         for music in player.playlist:
             data = Data(tuple(list(music)[0:2]))
             self.model_albums_view.append(data)
-
         self.track_list_albums_view.show_all()
 
     @log
-    def update_default_view_songs(self, player):
+    def update_songs_view(self, player):
         self.model_default_view.remove_all()
         for music in player.playlist:
             data = Data(tuple(music)[2:4])
@@ -1224,7 +1223,7 @@ class PlaybackPopover(object):
         self.track_list_default_view.show_all()
 
     @log
-    def update_default_view(self, player):
+    def update_artists_view(self, player):
         self.model_default_view.remove_all()
         for music in player.playlist:
             data = Data(tuple(music)[0])
@@ -1236,15 +1235,15 @@ class PlaybackPopover(object):
         previous_track = player._get_previous_track()
         previous_path = previous_track.get_path()
         previous_path.prev()
-        self.playbackPopover_playlists_view_previous_track_name.set_text(str(list(player.playlist[previous_path])[0]))
+        self.playlists_view_previous_track_name.set_text(
+            str(list(player.playlist[previous_path])[0]))
 
         # need improve now_track
-
-
         next_track = player._get_next_track()
         next_path = next_track.get_path()
         next_path.next()
-        self.playbackPopover_playlists_view_next_track_name.set_text(str(list(player.playlist[next_path])[0]))
+        self.playlists_view_next_track_name.set_text(
+            str(list(player.playlist[next_path])[0]))
 
 
 
@@ -1255,6 +1254,10 @@ class Data(GObject.Object):
         self.data = data
 
 
+        self.artist = None
+        self.track_name = None
+        self.album = None
+        self.time = None
 
 class MissingCodecsDialog(Gtk.MessageDialog):
 
