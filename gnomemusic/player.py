@@ -1165,52 +1165,11 @@ class PlaybackPopover(object):
         self.stack.set_visible_child_name(view_name)
 
     @log
-    def create_albums_row(self, data):
-        name, time = data.data
-        row = Gtk.ListBoxRow()
-        box_track = Gtk.Box()
-        row.add(box_track)
-
-        track_label = Gtk.Label()
-        time_label = Gtk.Label()
-
-        track_label.set_markup(name)
-        time_label.set_markup(time)
-        box_track.pack_start(track_label, False, False, 0)
-        box_track.pack_end(time_label, False, False, 0)
-        return row
-
-
-    @log
-    def create_default_row(self, data):
-        name, artist = data.data
-        row = Gtk.ListBoxRow()
-        box_track = Gtk.Box()
-        row.add(box_track)
-
-        box_label = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
-
-        box_track.add(self.now_playing)
-        box_track.add(self.player.playbackPopover_default_view_album_image)
-        box_track.add(box_label)
-
-        track_label = Gtk.Label()
-        track_artist = Gtk.Label()
-
-        track_label.set_markup(str(name))
-        track_artist.set_markup(str(artist))
-
-        box_label.add(track_label)
-        box_label.add(track_artist)
-
-        return row
-
-    @log
     def update_albums_view(self, player):
         self.model_albums_view.remove_all()
         # update model
         for music in player.playlist:
-            data = Data(tuple(list(music)[0:2]))
+            data = Data(music, 'albums')
             self.model_albums_view.append(data)
         self.track_list_albums_view.show_all()
 
@@ -1218,7 +1177,7 @@ class PlaybackPopover(object):
     def update_songs_view(self, player):
         self.model_default_view.remove_all()
         for music in player.playlist:
-            data = Data(tuple(music)[2:4])
+            data = Data(music, 'songs')
             self.model_default_view.append(data)
         self.track_list_default_view.show_all()
 
@@ -1226,7 +1185,7 @@ class PlaybackPopover(object):
     def update_artists_view(self, player):
         self.model_default_view.remove_all()
         for music in player.playlist:
-            data = Data(tuple(music)[0])
+            data = Data(music, 'artists')
             self.model_default_view.append(data)
         self.track_list_default_view.show_all()
 
@@ -1246,18 +1205,67 @@ class PlaybackPopover(object):
             str(list(player.playlist[next_path])[0]))
 
 
+    @log
+    def create_albums_row(self, data):
+        row = Gtk.ListBoxRow()
+        box_track = Gtk.Box()
+        row.add(box_track)
+
+        track_label = Gtk.Label()
+        time_label = Gtk.Label()
+
+        track_label.set_markup(data.track_name)
+        time_label.set_markup(data.time)
+        box_track.pack_start(track_label, False, False, 0)
+        box_track.pack_end(time_label, False, False, 0)
+        return row
+
+
+    @log
+    def create_default_row(self, data):
+        row = Gtk.ListBoxRow()
+        box_track = Gtk.Box()
+        row.add(box_track)
+
+        box_label = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
+
+        box_track.add(self.now_playing)
+        box_track.add(self.player.playbackPopover_default_view_album_image)
+        box_track.add(box_label)
+
+        track_label = Gtk.Label()
+        track_artist = Gtk.Label()
+
+        track_label.set_markup(data.track_name)
+        track_artist.set_markup(data.artist)
+
+        box_label.add(track_label)
+        box_label.add(track_artist)
+
+        return row
+
 
 class Data(GObject.Object):
 
-    def __init__(self, data):
+    def __init__(self, music, view):
         super().__init__()
-        self.data = data
+
+        self.music = tuple(music)
+
+        self.artist = 'vai'
+
+        if view == 'albums':
+            self.track_name = self.music[0]
+            self.time = self.music[1]
+
+        if view == 'songs':
+            self.track_name = self.music[2]
+            self.artist = self.music[3]
 
 
-        self.artist = None
-        self.track_name = None
-        self.album = None
-        self.time = None
+        if view == 'artists':
+            self.track_name = self.music[0]
+
 
 class MissingCodecsDialog(Gtk.MessageDialog):
 
