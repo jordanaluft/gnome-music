@@ -64,7 +64,6 @@
                       <object class="GtkImage" id="playbackPopover_albums_view_album_image">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">album.png</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -244,7 +243,7 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="image">shuffle_button_image</property>
-                        <property name="always_show_image">True</property>
+                        <property name="always_show_image">False</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -335,7 +334,6 @@
                           <object class="GtkImage" id="playbackPopover_playlists_view_previous_album_image">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">album1.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -424,7 +422,6 @@
                           <object class="GtkImage" id="playbackPopover_playlists_view_now_album_image">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">album1.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -513,7 +510,6 @@
                           <object class="GtkImage" id="playbackPopover_playlists_view_next_album_image">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="pixbuf">album1.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>

@@ -145,7 +145,8 @@ class Player(GObject.GObject):
         self._check_last_fm()
 
         self.playbackPopover = PlaybackPopover(self)
-        self.connect('playlist-changed', self.playbackPopover.update_playlist)
+
+        self.connect('playlist-item-changed', self.playbackPopover.update_playlist)
 
         # this should be in PlaybackPopover
         self.playbackPopover_albums_view_artist = self._ui.get_object('playbackPopover_albums_view_artist')
@@ -154,6 +155,8 @@ class Player(GObject.GObject):
         self.playbackPopover_default_view_artist = Gtk.Label()
         self.playbackPopover_default_view_track_name = Gtk.Label()
         self.playbackPopover_default_view_album_image = Gtk.Image()
+        self.playbackPopover_playlists_view_now_track_name = self._ui.get_object('playbackPopover_playlists_view_now_track_name')
+        self.playbackPopover_playlists_view_now_artist = self._ui.get_object('playbackPopover_playlists_view_now_artist')
         self.playbackPopover_playlists_view_previous_album_image = self._ui.get_object('playbackPopover_playlists_view_previous_album_image')
         self.playbackPopover_playlists_view_now_album_image = self._ui.get_object('playbackPopover_playlists_view_now_album_image')
         self.playbackPopover_playlists_view_next_album_image = self._ui.get_object('playbackPopover_playlists_view_next_album_image')
@@ -618,6 +621,8 @@ class Player(GObject.GObject):
 
             self.playbackPopover_albums_view_artist.set_label(artist) # this should be in playbackPopover
             self.playbackPopover_default_view_artist.set_label(artist) #this shoould be in playbackPopover
+            self.playbackPopover_playlists_view_now_artist.set_label(artist)  #this should be in playbackPopover
+
             self._currentArtist = artist
 
         album = _("Unknown Album")
@@ -641,6 +646,7 @@ class Player(GObject.GObject):
         self.titleLabel.set_label(self._currentTitle)
         self.playbackPopover_albums_view_track_name.set_label(self._currentTitle) # this should be in playbackPopover
         self.playbackPopover_default_view_track_name.set_label(self._currentTitle) #this should be in playbackPopover
+        self.playbackPopover_playlists_view_now_track_name.set_label(self._currentTitle)  #this should be in playbackPopover
 
         self._currentTimestamp = int(time.time())
 
@@ -847,8 +853,6 @@ class Player(GObject.GObject):
         self.repeatBtnImage = self._ui.get_object('playlistRepeat')
 
         self.nowplaying_button = self._ui.get_object('nowplaying_button')
-
-
 
         if Gtk.Settings.get_default().get_property('gtk_application_prefer_dark_theme'):
             color = Gdk.RGBA(red=1.0, green=1.0, blue=1.0, alpha=1.0)
@@ -1142,13 +1146,16 @@ class PlaybackPopover(object):
 
         self.now_playing = self.player._ui.get_object('playbackPopover_playing')
 
-        self.playlists_view_previous_track_name = self.player._ui.get_object('playbackPopover_playlists_view_previous_track_name')
-        self.playlists_view_now_track_name = self.player._ui.get_object('playbackPopover_playlists_view_now_track_name')
-        self.playlists_view_next_track_name = self.player._ui.get_object('playbackPopover_playlists_view_next_track_name')
+        self.previous_track_name = self.player._ui.get_object('playbackPopover_playlists_view_previous_track_name')
+        self.previous_artist = self.player._ui.get_object('playbackPopover_playlists_view_previous_artist')
+        self.next_track_name = self.player._ui.get_object('playbackPopover_playlists_view_next_track_name')
+        self.next_artist = self.player._ui.get_object('playbackPopover_playlists_view_next_artist')
+
 
 
     @log
-    def update_playlist(self, player):
+    def update_playlist(self, player, playlist, currentTrack):
+        print(list(playlist[currentTrack]))
         view_name = self.player._parent_window.get_current_view_name()
 
         if view_name == 'albums':
@@ -1193,17 +1200,17 @@ class PlaybackPopover(object):
     def update_playlists_view(self, player):
         previous_track = player._get_previous_track()
         previous_path = previous_track.get_path()
-        previous_path.prev()
-        self.playlists_view_previous_track_name.set_text(
-            str(list(player.playlist[previous_path])[0]))
+        self.previous_track_name.set_text(
+            str(list(player.playlist[previous_path])[2]))
+        self.previous_artist.set_text(
+            str(list(player.playlist[previous_path])[3]))
 
-        # need improve now_track
         next_track = player._get_next_track()
         next_path = next_track.get_path()
-        next_path.next()
-        self.playlists_view_next_track_name.set_text(
-            str(list(player.playlist[next_path])[0]))
-
+        self.next_track_name.set_text(
+            str(list(player.playlist[next_path])[2]))
+        self.next_artist.set_text(
+            str(list(player.playlist[next_path])[3]))
 
     @log
     def create_albums_row(self, data):
