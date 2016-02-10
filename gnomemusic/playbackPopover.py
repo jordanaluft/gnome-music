@@ -13,6 +13,12 @@ class PlaybackPopover:
         self.popover = self._ui.get_object('playbackPopover')
         self.popover.set_relative_to(self.player.nowplaying_button)
 
+    def toggle_popover(self):
+        if self.popover.get_visible():
+            self.popover.hide()
+        else:
+            self.popover.show()
+
 
 class Song:
     pass

@@ -1082,10 +1082,7 @@ class Player(GObject.GObject):
 
     @log
     def _on_clicked_nowplaying_button(self, nowplaying_button):
-        if self.playbackPopover.popover.get_visible():
-            self.playbackPopover.popover.hide()
-        else:
-            self.playbackPopover.popover.show()
+        self.playbackPopover.toggle_popover()
 
 
 class MissingCodecsDialog(Gtk.MessageDialog):
