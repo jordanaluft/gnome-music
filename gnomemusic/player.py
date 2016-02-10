@@ -45,6 +45,7 @@ from collections import deque
 from gnomemusic.albumArtCache import AlbumArtCache
 from gnomemusic.playlists import Playlists
 playlists = Playlists.get_default()
+from gnomemusic.playbackPopover import PlaybackPopover
 
 from hashlib import md5
 import requests
@@ -827,6 +828,7 @@ class Player(GObject.GObject):
 
         self._sync_repeat_image()
 
+        self.nowplaying_button.connect('clicked', self._on_clicked_nowplaying_button)
         self.prevBtn.connect('clicked', self._on_prev_btn_clicked)
         self.playBtn.connect('clicked', self._on_play_btn_clicked)
         self.nextBtn.connect('clicked', self._on_next_btn_clicked)
@@ -1074,6 +1076,10 @@ class Player(GObject.GObject):
         if self.playlist.get_value(currentTrack, self.discovery_status_field) == DiscoveryStatus.FAILED:
             return None
         return self.playlist.get_value(currentTrack, self.playlistField)
+
+    @log
+    def _on_clicked_nowplaying_button(self, nowplaying_button):
+        pass
 
 
 class MissingCodecsDialog(Gtk.MessageDialog):
