@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="gnome-music">
+
+<object class="GtkPopover" id="playbackPopover">
+    <property name="can_focus">False</property>
+</object>
