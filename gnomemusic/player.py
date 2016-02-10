@@ -82,6 +82,7 @@ class Player(GObject.GObject):
     timeout = None
     shuffleHistory = deque(maxlen=10)
 
+
     __gsignals__ = {
         'playing-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
@@ -815,6 +816,7 @@ class Player(GObject.GObject):
         self.coverImg = self._ui.get_object('cover')
         self.duration = self._ui.get_object('duration')
         self.repeatBtnImage = self._ui.get_object('playlistRepeat')
+        self.nowplaying_button = self._ui.get_object('nowplaying_button')
 
         if Gtk.Settings.get_default().get_property('gtk_application_prefer_dark_theme'):
             color = Gdk.RGBA(red=1.0, green=1.0, blue=1.0, alpha=1.0)
