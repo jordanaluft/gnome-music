@@ -15,5 +15,6 @@
     <file preprocess="xml-stripblanks">NoMusic.ui</file>
     <file preprocess="xml-stripblanks">PlaylistControls.ui</file>
     <file preprocess="xml-stripblanks">PlaylistDialog.ui</file>
+    <file preprocess="xml-stripblanks">playbackPopover.ui</file>
   </gresource>
 </gresources>

@@ -147,6 +147,8 @@ class Player(GObject.GObject):
 
         self._check_last_fm()
 
+        self.playbackPopover = PlaybackPopover(self)
+
     @log
     def _check_last_fm(self):
         try:
@@ -828,7 +830,8 @@ class Player(GObject.GObject):
 
         self._sync_repeat_image()
 
-        self.nowplaying_button.connect('clicked', self._on_clicked_nowplaying_button)
+        self.nowplaying_button.connect(
+            'clicked', self._on_clicked_nowplaying_button)
         self.prevBtn.connect('clicked', self._on_prev_btn_clicked)
         self.playBtn.connect('clicked', self._on_play_btn_clicked)
         self.nextBtn.connect('clicked', self._on_next_btn_clicked)
@@ -1079,7 +1082,10 @@ class Player(GObject.GObject):
 
     @log
     def _on_clicked_nowplaying_button(self, nowplaying_button):
-        pass
+        if self.playbackPopover.popover.get_visible():
+            self.playbackPopover.popover.hide()
+        else:
+            self.playbackPopover.popover.show()
 
 
 class MissingCodecsDialog(Gtk.MessageDialog):
