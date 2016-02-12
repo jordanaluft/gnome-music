@@ -1,32 +1,35 @@
-from gi.repository import Gtk, Gio, GObject
+import os
+
+from gi.repository import Gio, GObject, Gtk
 
 
-class PlaybackPopover:
+BASE_UI_RESOURCE = '/org/gnome/Music/playback_popover/'
+
+
+class PlaybackPopover(object):
 
     def __init__(self, player):
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource(
-            '/org/gnome/Music/playbackPopover.ui')
+        self.ui = Gtk.Builder()
+        self.ui.add_from_resource(os.path.join(BASE_UI_RESOURCE, 'popover.ui'))
 
         self.player = player
+        self.player.connect('playlist-item-changed', self.update_popover)
 
         self.popover = Gtk.Popover()
         self.popover.set_relative_to(self.player.nowplaying_button)
 
-        self.box = self._ui.get_object('box_main')
+        self.box = self.ui.get_object('box_main')
         self.popover.add(self.box)
-
-        self.player.connect('playlist-item-changed', self.update_popover)
 
         self.model = Gio.ListStore()
 
-        self.tracklist_default = self._ui.get_object('default_view_track_list')
-        self.tracklist_default.bind_model(self.model, self.populate_model)
+        self.default_tracklist = self.ui.get_object('default_tracklist')
+        self.default_tracklist.bind_model(self.model, self.populate_default_model)
 
-        self.tracklist_albums = self._ui.get_object('albums_view_track_list')
-        self.tracklist.bind_model(self.model, self.populate_model)
+        self.album_tracklist = self.ui.get_object('album_tracklist')
+        self.album_tracklist.bind_model(self.model, self.populate_album_model)
 
-        self.stack = self._ui.get_object('stack')
+        self.stack = self.ui.get_object('stack')
 
     def toggle_popover(self):
         if self.popover.get_visible():
