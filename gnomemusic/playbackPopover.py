@@ -66,6 +66,13 @@ class PlaybackPopover(object):
         for music in self.player.playlist:
             song = Song(music, self.player.playlistType)
             self.model.append(song)
+
+        album_track_name = self.ui.get_object('album_track_name')
+        album_artist = self.ui.get_object('album_artist')
+
+        album_track_name.set_markup(self.player._currentTitle)
+        album_artist.set_markup(self.player._currentArtist)
+
         self.album_tracklist.show_all()
 
     def create_playlist_box(self):
