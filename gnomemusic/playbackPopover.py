@@ -37,36 +37,31 @@ class PlaybackPopover(object):
         else:
             self.popover.show_all()
 
-    def update_albums_view(self, player, playlist, current_track):
+    def update_popover(self, player, playlist, current_track):
+        view_name = player.playlistType
+
+        if view_name == 'Album':
+            self.update_album_view()
+        elif view_name == 'Playlist':
+            self.update_playlists_view()
+        else:
+            self.update_default_view()
+            view_name = 'Default'
+
+        self.stack.set_visible_child_name(view_name)
+
+    def update_album_view(self):
         self.model.remove_all()
-        self.label.set_label(self.player.playlistType)
-        self.box.pack_start(self.label, False, True, 0)
         for music in self.player.playlist:
             song = Song(music, self.player.playlistType)
             self.model.append(song)
-        self.tracklist_albums.show_all()
+        self.album_tracklist.show_all()
 
-    def populate_model(self, song):
-        row = Gtk.ListBoxRow()
-        box = Gtk.Box()
-        row.add(box)
-        track_name = Gtk.Label()
-        time = Gtk.Label()
-        artist = Gtk.Label()
-        album = Gtk.Label()
+    def populate_album_model(self, song):
+        return AlbumRow(song)
 
-        track_name.set_markup(song.track_name)
-        time.set_markup(song.time)
-        artist.set_markup(song.artist)
-        album.set_markup(song.album)
-
-        box.add(track_name)
-        box.add(artist)
-        box.add(album)
-        box.add(time)
-        box.add(song.cover)
-
-        return row
+    def populate_default_model(self, song):
+        pass
 
 
 class AlbumRow(Gtk.ListBoxRow):
