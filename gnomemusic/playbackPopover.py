@@ -10,19 +10,23 @@ class PlaybackPopover:
 
         self.player = player
 
-        self.popover = self._ui.get_object('playbackPopover')
+        self.popover = Gtk.Popover()
         self.popover.set_relative_to(self.player.nowplaying_button)
 
-        self.label = Gtk.Label()
-        self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.box = self._ui.get_object('box_main')
         self.popover.add(self.box)
 
         self.player.connect('playlist-item-changed', self.update_popover)
 
         self.model = Gio.ListStore()
-        self.track_list = Gtk.ListBox()
-        self.track_list.bind_model(self.model, self.populate_model)
-        self.box.pack_end(self.track_list, False, True, 0)
+
+        self.tracklist_default = self._ui.get_object('default_view_track_list')
+        self.tracklist_default.bind_model(self.model, self.populate_model)
+
+        self.tracklist_albums = self._ui.get_object('albums_view_track_list')
+        self.tracklist.bind_model(self.model, self.populate_model)
+
+        self.stack = self._ui.get_object('stack')
 
     def toggle_popover(self):
         if self.popover.get_visible():
@@ -30,14 +34,14 @@ class PlaybackPopover:
         else:
             self.popover.show_all()
 
-    def update_popover(self, player, playlist, current_track):
+    def update_albums_view(self, player, playlist, current_track):
         self.model.remove_all()
         self.label.set_label(self.player.playlistType)
         self.box.pack_start(self.label, False, True, 0)
         for music in self.player.playlist:
             song = Song(music, self.player.playlistType)
             self.model.append(song)
-        self.track_list.show_all()
+        self.tracklist_albums.show_all()
 
     def populate_model(self, song):
         row = Gtk.ListBoxRow()
@@ -86,4 +90,3 @@ class Song(GObject.Object):
         elif playlist_type == 'Artist':
             self.track_name = self.music[0]
             self.artist = self.music[1]
-            self.cover = self.music[2]
