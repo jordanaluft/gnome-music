@@ -69,6 +69,24 @@ class PlaybackPopover(object):
         return row
 
 
+class AlbumRow(Gtk.ListBoxRow):
+
+    def __init__(self, song):
+        super().__init__()
+        self.ui = Gtk.Builder()
+        self.ui.add_from_resource(
+            os.path.join(BASE_UI_RESOURCE, 'row_album.ui'))
+
+        self.track_name = self.ui.get_object('track_name')
+        self.time = self.ui.get_object('time')
+
+        self.track_name.set_markup(song.track_name)
+        self.time.set_markup(song.time)
+
+        self.box = self.ui.get_object('box')
+        self.add(self.box)
+
+
 class Song(GObject.Object):
 
     def __init__(self, music, playlist_type):
