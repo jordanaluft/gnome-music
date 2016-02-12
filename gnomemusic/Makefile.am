@@ -14,5 +14,5 @@ app_PYTHON = \
 	query.py \
 	widgets.py \
 	searchbar.py \
-	window.py
-
+	window.py \
+	playbackPopover.py
