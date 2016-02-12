@@ -24,10 +24,12 @@ class PlaybackPopover(object):
         self.model = Gio.ListStore()
 
         self.default_tracklist = self.ui.get_object('default_tracklist')
-        self.default_tracklist.bind_model(self.model, self.populate_default_model)
+        self.default_tracklist.bind_model(
+            self.model, self.populate_default_tracklist)
 
         self.album_tracklist = self.ui.get_object('album_tracklist')
-        self.album_tracklist.bind_model(self.model, self.populate_album_model)
+        self.album_tracklist.bind_model(
+            self.model, self.populate_album_tracklist)
 
         self.stack = self.ui.get_object('stack')
 
@@ -43,12 +45,15 @@ class PlaybackPopover(object):
         if view_name == 'Album':
             self.update_album_view()
         elif view_name == 'Playlist':
-            self.update_playlists_view()
+            self.update_playlist_view()
         else:
             self.update_default_view()
             view_name = 'Default'
 
         self.stack.set_visible_child_name(view_name)
+
+    def update_default_view(self):
+        pass
 
     def update_album_view(self):
         self.model.remove_all()
@@ -57,10 +62,13 @@ class PlaybackPopover(object):
             self.model.append(song)
         self.album_tracklist.show_all()
 
-    def populate_album_model(self, song):
+    def update_playlist_view(self):
+        pass
+
+    def populate_album_tracklist(self, song):
         return AlbumRow(song)
 
-    def populate_default_model(self, song):
+    def populate_default_tracklist(self, song):
         pass
 
 
