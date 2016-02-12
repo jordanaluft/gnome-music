@@ -76,11 +76,11 @@ class Song(GObject.Object):
 
         self.music = tuple(music)
 
-        self.artist = "Artist"
-        self.album = "Album"
+        self.artist = 'Artist'
+        self.album = 'Album'
         self.cover = Gtk.Image()
-        self.time = "Time"
-        self.track_name = "Track Name"
+        self.time = 'Time'
+        self.track_name = 'Track Name'
 
         if playlist_type == 'Album':
             self.track_name = self.music[0]
