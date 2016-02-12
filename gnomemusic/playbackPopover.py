@@ -53,7 +53,11 @@ class PlaybackPopover(object):
         self.stack.set_visible_child_name(view_name)
 
     def update_default_view(self):
-        pass
+        self.model.remove_all()
+        for music in self.player.playlist:
+            song = Song(music, self.player.playlistType)
+            self.model.append(song)
+        self.default_tracklist.show_all()
 
     def update_album_view(self):
         self.model.remove_all()
@@ -69,8 +73,25 @@ class PlaybackPopover(object):
         return AlbumRow(song)
 
     def populate_default_tracklist(self, song):
-        pass
+        return DefaultRow(song)
 
+
+class DefaultRow(Gtk.ListBoxRow):
+    def __init__(self, song):
+        super().__init__()
+        self.ui = Gtk.Builder()
+        self.ui.add_from_resource(
+            os.path.join(BASE_UI_RESOURCE, 'row_default.ui'))
+
+        self.track_name = self.ui.get_object('track_name')
+        self.artist = self.ui.get_object('artist')
+        self.cover = self.ui.get_object('cover')
+
+        self.track_name.set_markup(song.track_name)
+        self.artist.set_markup(song.artist)
+
+        self.box = self.ui.get_object('box')
+        self.add(self.box)
 
 class AlbumRow(Gtk.ListBoxRow):
 
