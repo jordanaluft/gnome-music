@@ -72,6 +72,7 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkImage" id="album_cover_image">
+                    <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>

@@ -119,11 +119,12 @@ class DefaultRow(Gtk.ListBoxRow):
 
         self.track_name = self.ui.get_object('track_name')
         self.artist = self.ui.get_object('artist')
-        self.cover = self.ui.get_object('cover')
+        self.cover = self.ui.get_object('box1')
 
         self.track_name.set_markup(song.track_name)
         self.artist.set_markup(song.artist)
-        self.cover.set_from_pixbuf(song.cover.get_pixbuf())
+        self.cover.add(song.cover)
+        self.cover.set_size_request(10,10)
 
         self.box = self.ui.get_object('box')
         self.add(self.box)
