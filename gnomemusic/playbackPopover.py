@@ -123,6 +123,7 @@ class DefaultRow(Gtk.ListBoxRow):
 
         self.track_name.set_markup(song.track_name)
         self.artist.set_markup(song.artist)
+        self.cover.set_from_resource = song.cover.props.resource
 
         self.box = self.ui.get_object('box')
         self.add(self.box)
@@ -173,7 +174,7 @@ class Song(GObject.Object):
 
         self.artist = 'Artist'
         self.album = 'Album'
-        self.cover = Gtk.Image()
+        self.cover = None
         self.time = 'Time'
         self.track_name = 'Track Name'
 
@@ -188,6 +189,7 @@ class Song(GObject.Object):
         elif playlist_type == 'Artist':
             self.track_name = self.music[0]
             self.artist = self.music[1]
+            self.cover = self.music[2]
 
         elif playlist_type == 'Playlist':
             self.track_name = self.music[2]

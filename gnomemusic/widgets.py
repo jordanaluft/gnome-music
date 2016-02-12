@@ -398,7 +398,7 @@ class ArtistAlbums(Gtk.Box):
 
         self.model = Gtk.ListStore(GObject.TYPE_STRING,   # title
                                    GObject.TYPE_STRING,
-                                   GdkPixbuf.Pixbuf,
+                                   Gtk.Image,
                                    GObject.TYPE_BOOLEAN,  # icon shown
                                    GObject.TYPE_STRING,   # icon
                                    GObject.TYPE_OBJECT,   # song object
