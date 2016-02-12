@@ -18,5 +18,6 @@
     <file preprocess="xml-stripblanks">playback_popover/popover.ui</file>
     <file preprocess="xml-stripblanks">playback_popover/row_album.ui</file>
     <file preprocess="xml-stripblanks">playback_popover/row_default.ui</file>
+    <file preprocess="xml-stripblanks">playback_popover/row_playlist.ui</file>
   </gresource>
 </gresources>

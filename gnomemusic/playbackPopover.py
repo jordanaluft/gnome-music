@@ -33,6 +33,8 @@ class PlaybackPopover(object):
 
         self.stack = self.ui.get_object('stack')
 
+        self.create_playlist_box()
+
     def toggle_popover(self):
         if self.popover.get_visible():
             self.popover.hide()
@@ -66,8 +68,29 @@ class PlaybackPopover(object):
             self.model.append(song)
         self.album_tracklist.show_all()
 
+    def create_playlist_box(self):
+        self.a = 0
+        self.playlist_box = self.ui.get_object('playlist_box_main')
+        self.playlist_previous = PlaylistRow('Previous')
+        self.playlist_now = PlaylistRow('Now')
+        self.playlist_next = PlaylistRow('Next')
+
+        self.playlist_box.add(self.playlist_previous)
+        self.playlist_box.add(self.playlist_now)
+        self.playlist_box.add(self.playlist_next)
+
     def update_playlist_view(self):
-        pass
+        self.update_playlist_row(self.playlist_previous, self.player._get_previous_track())
+        self.update_playlist_row(self.playlist_now, self.player.currentTrack)
+        self.update_playlist_row(self.playlist_next, self.player._get_next_track())
+        self.playlist_box.show_all()
+
+    def update_playlist_row(self, row, iter):
+        path = iter.get_path()
+        track = self.player.playlist[path]
+        song = Song(track, self.player.playlistType)
+        row.track_name.set_markup(song.track_name)
+        row.artist.set_markup(song.artist)
 
     def populate_album_tracklist(self, song):
         return AlbumRow(song)
@@ -92,6 +115,25 @@ class DefaultRow(Gtk.ListBoxRow):
 
         self.box = self.ui.get_object('box')
         self.add(self.box)
+
+
+class PlaylistRow(Gtk.Box):
+
+    def __init__(self, state):
+        super().__init__()
+        self.ui = Gtk.Builder()
+        self.ui.add_from_resource(
+            os.path.join(BASE_UI_RESOURCE, 'row_playlist.ui'))
+
+        self.state = self.ui.get_object('state')
+        self.track_name = self.ui.get_object('track_name')
+        self.artist = self.ui.get_object('artist')
+
+        self.state.set_text(state)
+
+        self.box = self.ui.get_object('box')
+        self.add(self.box)
+
 
 class AlbumRow(Gtk.ListBoxRow):
 
@@ -135,3 +177,7 @@ class Song(GObject.Object):
         elif playlist_type == 'Artist':
             self.track_name = self.music[0]
             self.artist = self.music[1]
+
+        elif playlist_type == 'Playlist':
+            self.track_name = self.music[2]
+            self.artist = self.music[3]
