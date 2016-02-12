@@ -79,9 +79,11 @@ class Song(GObject.Object):
             self.track_name = self.music[0]
             self.time = self.music[1]
 
-        elif playlist_type == 'Song':
+        elif playlist_type == 'Songs':
             self.track_name = self.music[2]
             self.artist = self.music[3]
 
         elif playlist_type == 'Artist':
             self.track_name = self.music[0]
+            self.artist = self.music[1]
+            self.cover = self.music[2]

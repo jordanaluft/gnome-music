@@ -398,7 +398,7 @@ class ArtistAlbums(Gtk.Box):
 
         self.model = Gtk.ListStore(GObject.TYPE_STRING,   # title
                                    GObject.TYPE_STRING,
-                                   GObject.TYPE_STRING,
+                                   Gtk.Image,
                                    GObject.TYPE_BOOLEAN,  # icon shown
                                    GObject.TYPE_STRING,   # icon
                                    GObject.TYPE_OBJECT,   # song object
@@ -643,7 +643,7 @@ class ArtistAlbumWidget(Gtk.Box):
                 )
                 self.model.set(itr,
                                [0, 1, 2, 3, 5],
-                               [title, '', '', False, track])
+                               [title, self.artist, self.cover, False, track])
                 song_widget.now_playing_sign = ui.get_object('image1')
                 song_widget.now_playing_sign.set_from_icon_name(
                     NOW_PLAYING_ICON_NAME,
