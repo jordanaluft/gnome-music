@@ -61,17 +61,17 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkBox" id="albums_view_box_content">
+          <object class="GtkBox" id="album_box_main">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkBox" id="albums_view_box_left">
+              <object class="GtkBox" id="album_box_left">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage" id="albums_view_album_image">
+                  <object class="GtkImage" id="album_cover_image">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -83,7 +83,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="albums_view_track_name">
+                  <object class="GtkLabel" id="album_track_name">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Track Name</property>
@@ -99,7 +99,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="albums_view_artist">
+                  <object class="GtkLabel" id="album_artist">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Track Artist</property>
@@ -115,12 +115,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="albums_view_box_buttons">
+                  <object class="GtkBox" id="album_box_buttons">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <child>
-                      <object class="GtkToggleButton" id="albums_view_shuffle_button">
+                      <object class="GtkToggleButton" id="album_shuffle_button">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -134,7 +134,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToggleButton" id="albums_view_repeat_button">
+                      <object class="GtkToggleButton" id="album_repeat_button">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -148,7 +148,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToggleButton" id="albums_view_repeat_song_button">
+                      <object class="GtkToggleButton" id="album_repeat_song_button">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -182,23 +182,23 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="albums_view_scrolledwindow">
+              <object class="GtkScrolledWindow" id="album_scrolledwindow">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="margin_left">15</property>
+                <property name="margin_right">15</property>
+                <property name="margin_top">15</property>
+                <property name="margin_bottom">15</property>
                 <property name="hscrollbar_policy">never</property>
                 <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkViewport" id="viewport1">
+                  <object class="GtkViewport" id="album_viewport">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_right">15</property>
-                    <property name="margin_top">15</property>
                     <child>
-                      <object class="GtkListBox" id="albums_view_track_list">
+                      <object class="GtkListBox" id="album_tracklist">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">15</property>
-                        <property name="margin_bottom">15</property>
                       </object>
                     </child>
                   </object>
@@ -212,12 +212,12 @@
             </child>
           </object>
           <packing>
-            <property name="name">albums</property>
-            <property name="title" translatable="yes">albums</property>
+            <property name="name">Album</property>
+            <property name="title" translatable="yes">Album</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="default_view_box_content">
+          <object class="GtkBox" id="default_box_main">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">15</property>
@@ -225,17 +225,17 @@
             <property name="margin_top">15</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkScrolledWindow" id="default_view_scrolledwindow">
+              <object class="GtkScrolledWindow" id="default_scrolledwindow">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">never</property>
                 <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkViewport" id="default_view_viewport">
+                  <object class="GtkViewport" id="default_viewport">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkListBox" id="default_view_track_list">
+                      <object class="GtkListBox" id="default_tracklist">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -256,7 +256,7 @@
                 <property name="halign">center</property>
                 <property name="valign">end</property>
                 <child>
-                  <object class="GtkToggleButton" id="default_view_shuffle_button">
+                  <object class="GtkToggleButton" id="default_shuffle_button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -269,7 +269,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="default_view_repeat_button">
+                  <object class="GtkToggleButton" id="default_repeat_button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -283,7 +283,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleButton" id="playlists_view_repeat_song_button">
+                  <object class="GtkToggleButton" id="default_repeat_song_button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -309,13 +309,13 @@
             </child>
           </object>
           <packing>
-            <property name="name">default</property>
-            <property name="title" translatable="yes">default</property>
+            <property name="name">Default</property>
+            <property name="title" translatable="yes">Default</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="playlists_view_box_content">
+          <object class="GtkBox" id="playlist_box_main">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="opacity">0.96078431372549022</property>
@@ -324,12 +324,12 @@
             <property name="margin_bottom">15</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox" id="playlists_view_previous_box">
+              <object class="GtkBox" id="playlist_previous_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkLabel" id="playlists_view_previous_label">
+                  <object class="GtkLabel" id="playlists_previous_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
@@ -345,11 +345,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="playlists_view_previous_box_track">
+                  <object class="GtkBox" id="playlists_previous_box_track">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImage" id="playlists_view_previous_album_image">
+                      <object class="GtkImage" id="playlists_previous_album_image">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -361,12 +361,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="playlists_view_previous_box_labels">
+                      <object class="GtkBox" id="playlists_previous_box_labels">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="playlists_view_previous_track_name">
+                          <object class="GtkLabel" id="playlists_previous_track_name">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">TrackName</property>
@@ -378,7 +378,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="playlists_view_previous_artist">
+                          <object class="GtkLabel" id="playlists_previous_artist">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Artist</property>
@@ -412,12 +412,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="playlists_view_box_now">
+              <object class="GtkBox" id="playlist_now_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkLabel" id="playlists_view_now_label">
+                  <object class="GtkLabel" id="playlists_now_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
@@ -433,11 +433,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="playlists_view_now_box_tracks">
+                  <object class="GtkBox" id="playlists_now_box_tracks">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImage" id="playlists_view_now_album_image">
+                      <object class="GtkImage" id="playlists_now_album_image">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -449,12 +449,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="playlists_view_now_box_labels">
+                      <object class="GtkBox" id="playlists_now_box_labels">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="playlists_view_now_track_name">
+                          <object class="GtkLabel" id="playlists_now_track_name">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Track Name</property>
@@ -466,7 +466,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="playlists_view_now_artist">
+                          <object class="GtkLabel" id="playlists_now_artist">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Artist</property>
@@ -500,12 +500,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="playlists_view_next_box">
+              <object class="GtkBox" id="playlist_next_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkLabel" id="playlists_view_next_label">
+                  <object class="GtkLabel" id="playlist_next_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
@@ -521,11 +521,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="playlists_view_next_box_track">
+                  <object class="GtkBox" id="playlist_next_box_track">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImage" id="playlists_view_next_album_image">
+                      <object class="GtkImage" id="playlist_next_album_image">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -537,12 +537,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="playlists_view_next_box_labels">
+                      <object class="GtkBox" id="playlist_view_box_labels">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="playlists_view_next_track_name">
+                          <object class="GtkLabel" id="playlist_view_track_name">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Track Name</property>
@@ -554,7 +554,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="playlists_view_next_artist">
+                          <object class="GtkLabel" id="playlist_view_artist">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Artist</property>
@@ -589,8 +589,8 @@
             </child>
           </object>
           <packing>
-            <property name="name">playlists</property>
-            <property name="title" translatable="yes">playlists</property>
+            <property name="name">Playlist</property>
+            <property name="title" translatable="yes">Playlist</property>
             <property name="position">2</property>
           </packing>
         </child>
