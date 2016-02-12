@@ -86,11 +86,15 @@ class PlaybackPopover(object):
         self.playlist_box.show_all()
 
     def update_playlist_row(self, row, iter):
-        path = iter.get_path()
-        track = self.player.playlist[path]
-        song = Song(track, self.player.playlistType)
-        row.track_name.set_markup(song.track_name)
-        row.artist.set_markup(song.artist)
+        if iter is not None:
+            path = iter.get_path()
+            track = self.player.playlist[path]
+            song = Song(track, self.player.playlistType)
+            row.track_name.set_markup(song.track_name)
+            row.artist.set_markup(song.artist)
+        else:
+            row.track_name.set_markup('No Track')
+            row.artist.set_markup('')
 
     def populate_album_tracklist(self, song):
         return AlbumRow(song)
