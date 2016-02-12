@@ -123,7 +123,7 @@ class DefaultRow(Gtk.ListBoxRow):
 
         self.track_name.set_markup(song.track_name)
         self.artist.set_markup(song.artist)
-        self.cover.set_from_resource = song.cover.props.resource
+        self.cover.set_from_pixbuf(song.cover.get_pixbuf())
 
         self.box = self.ui.get_object('box')
         self.add(self.box)
