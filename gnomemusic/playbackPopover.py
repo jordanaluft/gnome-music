@@ -55,9 +55,13 @@ class PlaybackPopover(object):
             self.popover.show_all()
 
     def update_popover(self, player, playlist, current_track):
-        view_name = player.playlistType
-        self.headerbar.set_text(view_name)
+        self.playlist_type = player.playlistType
+        self.playlist = playlist
+        self.current_track = current_track
 
+        self.headerbar.set_text(self.playlist_type)
+
+        view_name = self.playlist_type
         if view_name == 'Album':
             self.update_album_view()
         elif view_name == 'Playlist':
@@ -70,22 +74,22 @@ class PlaybackPopover(object):
 
     def update_default_view(self):
         self.model.remove_all()
-        for music in self.player.playlist:
-            song = Song(music, self.player.playlistType)
+        for music in self.playlist:
+            song = Song(music, self.playlist_type)
             self.model.append(song)
         self.default_tracklist.show_all()
 
     def update_album_view(self):
         self.model.remove_all()
-        for music in self.player.playlist:
-            song = Song(music, self.player.playlistType)
+        for music in self.playlist:
+            song = Song(music, self.playlist_type)
             self.model.append(song)
 
         album_track_name = self.ui.get_object('album_track_name')
         album_artist = self.ui.get_object('album_artist')
 
-        album_track_name.set_markup(self.player._currentTitle)
-        album_artist.set_markup(self.player._currentArtist)
+        album_track_name.set_markup(self.get_current_track_name())
+        album_artist.set_markup(self.get_current_artist())
 
         self.album_tracklist.show_all()
 
@@ -99,7 +103,7 @@ class PlaybackPopover(object):
         if iter is not None:
             path = iter.get_path()
             track = self.player.playlist[path]
-            song = Song(track, self.player.playlistType)
+            song = Song(track, self.playlist_type)
             row.track_name.set_markup(song.track_name)
             row.artist.set_markup(song.artist)
         else:
@@ -111,6 +115,13 @@ class PlaybackPopover(object):
 
     def populate_default_tracklist(self, song):
         return DefaultRow(song)
+
+    def get_current_artist(self):
+        return self.player._currentArtist
+
+    def get_current_track_name(self):
+        return self.player._currentTitle
+
 
 
 class DefaultRow(Gtk.ListBoxRow):
