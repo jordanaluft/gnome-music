@@ -1,6 +1,6 @@
 import os
 
-from gi.repository import Gio, GObject, Gtk
+from gi.repository import Gio, GObject, Grl, Gtk
 
 
 BASE_UI_RESOURCE = '/org/gnome/Music/playback_popover/'
@@ -123,7 +123,6 @@ class PlaybackPopover(object):
         return self.player._currentTitle
 
 
-
 class DefaultRow(Gtk.ListBoxRow):
     def __init__(self, song):
         super().__init__()
@@ -180,6 +179,9 @@ class AlbumRow(Gtk.ListBoxRow):
 
 class Song(GObject.Object):
 
+    SMALL_COVER = (30, 30)
+    BIG_COVER = (175, 175)
+
     def __init__(self, music, playlist_type):
         super().__init__()
 
@@ -190,6 +192,8 @@ class Song(GObject.Object):
         self.cover = None
         self.time = 'Time'
         self.track_name = 'Track Name'
+        self.media = self.music[5]
+        self.get_artist()
 
         if playlist_type == 'Album':
             self.track_name = self.music[0]
@@ -197,13 +201,16 @@ class Song(GObject.Object):
 
         elif playlist_type == 'Songs':
             self.track_name = self.music[2]
-            self.artist = self.music[3]
 
         elif playlist_type == 'Artist':
             self.track_name = self.music[0]
-            self.artist = self.music[1]
             self.cover = self.music[2]
 
         elif playlist_type == 'Playlist':
             self.track_name = self.music[2]
-            self.artist = self.music[3]
+
+    def get_artist(self):
+        self.artist = self.media.get_string(
+            Grl.METADATA_KEY_ARTIST) or \
+            self.album.get_author() or \
+            'Unknown Artist'
