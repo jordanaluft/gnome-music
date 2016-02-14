@@ -74,7 +74,6 @@
             <property name="height_request">380</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
             <child>
               <object class="GtkBox" id="album_box_left">
                 <property name="visible">True</property>
@@ -188,7 +187,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">40</property>
+                <property name="padding">80</property>
                 <property name="position">0</property>
               </packing>
             </child>
