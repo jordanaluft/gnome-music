@@ -30,5 +30,8 @@
         <property name="position">1</property>
       </packing>
     </child>
+    <style>
+      <class name="tracklist"/>
+    </style>
   </object>
 </interface>

@@ -72,7 +72,6 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkImage" id="album_cover_image">
-                    <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -88,9 +87,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Track Name</property>
+                    <property name="ellipsize">middle</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
-                      <attribute name="foreground" value="#ffffffffffff"/>
                     </attributes>
                   </object>
                   <packing>
@@ -106,6 +105,7 @@
                     <property name="label" translatable="yes">Track Artist</property>
                     <property name="justify">fill</property>
                     <attributes>
+                      <attribute name="weight" value="bold"/>
                       <attribute name="foreground" value="#88888a8a8585"/>
                     </attributes>
                   </object>
@@ -200,10 +200,16 @@
                       <object class="GtkListBox" id="album_tracklist">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <style>
+                          <class name="tracklist"/>
+                        </style>
                       </object>
                     </child>
                   </object>
                 </child>
+                <style>
+                  <class name="tracklist"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -239,10 +245,16 @@
                       <object class="GtkListBox" id="default_tracklist">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <style>
+                          <class name="tracklist"/>
+                        </style>
                       </object>
                     </child>
                   </object>
                 </child>
+                <style>
+                  <class name="tracklist"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">True</property>

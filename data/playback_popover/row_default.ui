@@ -11,16 +11,7 @@
         <property name="can_focus">False</property>
         <property name="margin_left">15</property>
         <child>
-          <object class="GtkImage" id="cover">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_right">15</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
+          <placeholder/>
         </child>
       </object>
       <packing>
