@@ -15,6 +15,8 @@ class PlaybackPopover(object):
         self.player = player
         self.player.connect('playlist-item-changed', self.update_popover)
 
+        self.headerbar = self.ui.get_object('headerbar')
+
         self.popover = Gtk.Popover()
         self.popover.set_relative_to(self.player.nowplaying_button)
 
@@ -35,6 +37,17 @@ class PlaybackPopover(object):
 
         self.create_playlist_box()
 
+    def create_playlist_box(self):
+        self.a = 0
+        self.playlist_box = self.ui.get_object('playlist_box_main')
+        self.playlist_previous = PlaylistRow('Previous')
+        self.playlist_now = PlaylistRow('Now')
+        self.playlist_next = PlaylistRow('Next')
+
+        self.playlist_box.add(self.playlist_previous)
+        self.playlist_box.add(self.playlist_now)
+        self.playlist_box.add(self.playlist_next)
+
     def toggle_popover(self):
         if self.popover.get_visible():
             self.popover.hide()
@@ -43,6 +56,7 @@ class PlaybackPopover(object):
 
     def update_popover(self, player, playlist, current_track):
         view_name = player.playlistType
+        self.headerbar.set_text(view_name)
 
         if view_name == 'Album':
             self.update_album_view()
@@ -75,24 +89,13 @@ class PlaybackPopover(object):
 
         self.album_tracklist.show_all()
 
-    def create_playlist_box(self):
-        self.a = 0
-        self.playlist_box = self.ui.get_object('playlist_box_main')
-        self.playlist_previous = PlaylistRow('Previous')
-        self.playlist_now = PlaylistRow('Now')
-        self.playlist_next = PlaylistRow('Next')
-
-        self.playlist_box.add(self.playlist_previous)
-        self.playlist_box.add(self.playlist_now)
-        self.playlist_box.add(self.playlist_next)
-
     def update_playlist_view(self):
-        self.update_playlist_row(self.playlist_previous, self.player._get_previous_track())
-        self.update_playlist_row(self.playlist_now, self.player.currentTrack)
-        self.update_playlist_row(self.playlist_next, self.player._get_next_track())
+        self.populate_playlist_tracklist(self.playlist_previous, self.player._get_previous_track())
+        self.populate_playlist_tracklist(self.playlist_now, self.player.currentTrack)
+        self.populate_playlist_tracklist(self.playlist_next, self.player._get_next_track())
         self.playlist_box.show_all()
 
-    def update_playlist_row(self, row, iter):
+    def populate_playlist_tracklist(self, row, iter):
         if iter is not None:
             path = iter.get_path()
             track = self.player.playlist[path]
