@@ -11,7 +11,16 @@
         <property name="can_focus">False</property>
         <property name="margin_left">15</property>
         <child>
-          <placeholder/>
+          <object class="GtkImage" id="image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="stock">gtk-missing-image</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
         </child>
       </object>
       <packing>

@@ -1,9 +1,15 @@
 import os
 
-from gi.repository import Gio, GObject, Grl, Gtk
+from gi.repository import Gio, GLib, GObject, Grl, Gtk
+
+from gnomemusic.albumArtCache import AlbumArtCache
 
 
 BASE_UI_RESOURCE = '/org/gnome/Music/playback_popover/'
+
+AlbumArtCache = AlbumArtCache.get_default()
+
+COVER_SIZE = (30, 30)
 
 
 class PlaybackPopover(object):
@@ -23,22 +29,22 @@ class PlaybackPopover(object):
         self.box = self.ui.get_object('box_main')
         self.popover.add(self.box)
 
-        self.model = Gio.ListStore()
+        self.default_model = Gio.ListStore()
+        self.album_model = Gio.ListStore()
 
         self.default_tracklist = self.ui.get_object('default_tracklist')
         self.default_tracklist.bind_model(
-            self.model, self.populate_default_tracklist)
+            self.default_model, self.populate_default_tracklist)
 
         self.album_tracklist = self.ui.get_object('album_tracklist')
         self.album_tracklist.bind_model(
-            self.model, self.populate_album_tracklist)
+            self.album_model, self.populate_album_tracklist)
 
         self.stack = self.ui.get_object('stack')
 
         self.create_playlist_box()
 
     def create_playlist_box(self):
-        self.a = 0
         self.playlist_box = self.ui.get_object('playlist_box_main')
         self.playlist_previous = PlaylistRow('Previous')
         self.playlist_now = PlaylistRow('Now')
@@ -72,18 +78,10 @@ class PlaybackPopover(object):
 
         self.stack.set_visible_child_name(view_name)
 
-    def update_default_view(self):
-        self.model.remove_all()
-        for music in self.playlist:
-            song = Song(music, self.playlist_type)
-            self.model.append(song)
-        self.default_tracklist.show_all()
-
     def update_album_view(self):
-        self.model.remove_all()
+        self.album_model.remove_all()
         for music in self.playlist:
-            song = Song(music, self.playlist_type)
-            self.model.append(song)
+            self.album_model.append(AlbumSong(music))
 
         album_track_name = self.ui.get_object('album_track_name')
         album_artist = self.ui.get_object('album_artist')
@@ -92,6 +90,18 @@ class PlaybackPopover(object):
         album_artist.set_markup(self.get_current_artist())
 
         self.album_tracklist.show_all()
+
+    def update_default_view(self):
+        self.default_model.remove_all()
+
+        for music in self.playlist:
+            if self.playlist_type == 'Songs':
+                song = Song(music)
+            elif self.playlist_type == 'Artist':
+                song = ArtistSong(music)
+            self.default_model.append(song)
+
+        self.default_tracklist.show_all()
 
     def update_playlist_view(self):
         self.populate_playlist_tracklist(self.playlist_previous, self.player._get_previous_track())
@@ -103,7 +113,8 @@ class PlaybackPopover(object):
         if iter is not None:
             path = iter.get_path()
             track = self.player.playlist[path]
-            song = Song(track, self.playlist_type)
+            song = PlaylistSong(track)
+
             row.track_name.set_markup(song.track_name)
             row.artist.set_markup(song.artist)
         else:
@@ -124,18 +135,62 @@ class PlaybackPopover(object):
 
 
 class DefaultRow(Gtk.ListBoxRow):
+
     def __init__(self, song):
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_resource(
             os.path.join(BASE_UI_RESOURCE, 'row_default.ui'))
 
+
+        self.song = song
         self.track_name = self.ui.get_object('track_name')
         self.artist = self.ui.get_object('artist')
-        self.cover = self.ui.get_object('box1')
+        self.cover = self.ui.get_object('image')
 
         self.track_name.set_markup(song.track_name)
         self.artist.set_markup(song.artist)
+
+        self.box = self.ui.get_object('box')
+        self.add(self.box)
+
+        self.set_album_cover()
+
+
+    def set_album_cover(self):
+        AlbumArtCache.lookup(
+            self.song.media,
+            COVER_SIZE[0],
+            COVER_SIZE[1],
+            self.get_album_cover_callback,
+            None,
+            self.song.artist,
+            self.song.media.get_title(),
+            first=False,
+        )
+
+    def get_album_cover_callback(self, cover, path, data=None):
+        if not cover:
+            cover = self.get_default_cover()
+        self.cover.set_from_pixbuf(cover)
+
+    def get_default_cover(self):
+        return AlbumArtCache.get_default_icon(COVER_SIZE[0], COVER_SIZE[1], False)
+
+
+class AlbumRow(Gtk.ListBoxRow):
+
+    def __init__(self, song):
+        super().__init__()
+        self.ui = Gtk.Builder()
+        self.ui.add_from_resource(
+            os.path.join(BASE_UI_RESOURCE, 'row_album.ui'))
+
+        self.track_name = self.ui.get_object('track_name')
+        self.time = self.ui.get_object('time')
+
+        self.track_name.set_markup(song.track_name)
+        self.time.set_markup(song.time)
 
         self.box = self.ui.get_object('box')
         self.add(self.box)
@@ -159,58 +214,53 @@ class PlaylistRow(Gtk.Box):
         self.add(self.box)
 
 
-class AlbumRow(Gtk.ListBoxRow):
+class BaseSong(GObject.Object):
 
-    def __init__(self, song):
-        super().__init__()
-        self.ui = Gtk.Builder()
-        self.ui.add_from_resource(
-            os.path.join(BASE_UI_RESOURCE, 'row_album.ui'))
-
-        self.track_name = self.ui.get_object('track_name')
-        self.time = self.ui.get_object('time')
-
-        self.track_name.set_markup(song.track_name)
-        self.time.set_markup(song.time)
-
-        self.box = self.ui.get_object('box')
-        self.add(self.box)
-
-
-class Song(GObject.Object):
-
-    SMALL_COVER = (30, 30)
-    BIG_COVER = (175, 175)
-
-    def __init__(self, music, playlist_type):
+    def __init__(self, music):
         super().__init__()
 
         self.music = tuple(music)
-
-        self.artist = 'Artist'
-        self.album = 'Album'
-        self.cover = None
-        self.time = 'Time'
-        self.track_name = 'Track Name'
         self.media = self.music[5]
-        self.get_artist()
 
-        if playlist_type == 'Album':
-            self.track_name = self.music[0]
-            self.time = self.music[1]
+        self.set_track_time()
+        self.set_track_name()
+        self.set_track_artist()
 
-        elif playlist_type == 'Songs':
-            self.track_name = self.music[2]
-
-        elif playlist_type == 'Artist':
-            self.track_name = self.music[0]
-            self.cover = self.music[2]
-
-        elif playlist_type == 'Playlist':
-            self.track_name = self.music[2]
-
-    def get_artist(self):
+    def set_track_artist(self):
         self.artist = self.media.get_string(
             Grl.METADATA_KEY_ARTIST) or \
-            self.album.get_author() or \
+            self.media.get_author() or \
             'Unknown Artist'
+
+    def set_track_name(self):
+        pass
+
+    def set_track_time(self):
+        pass
+
+
+class AlbumSong(BaseSong):
+
+    def set_track_name(self):
+        self.track_name = self.music[0]
+
+    def set_track_time(self):
+        self.time = self.music[1]
+
+
+class Song(BaseSong):
+
+    def set_track_name(self):
+        self.track_name = self.music[2]
+
+
+class ArtistSong(BaseSong):
+
+    def set_track_name(self):
+        self.track_name = self.music[0]
+
+
+class PlaylistSong(BaseSong):
+
+    def set_track_name(self):
+        self.track_name = self.music[2]
