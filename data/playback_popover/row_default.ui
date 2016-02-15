@@ -33,6 +33,7 @@
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">15</property>
         <property name="orientation">vertical</property>
         <property name="homogeneous">True</property>
         <child>
@@ -53,8 +54,6 @@
           <object class="GtkLabel" id="artist">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">
-</property>
             <property name="ellipsize">end</property>
             <property name="xalign">0</property>
             <property name="yalign">0</property>

@@ -42,16 +42,12 @@
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkLabel" id="headerbar">
+      <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
-        <property name="label" translatable="yes">label</property>
-        <attributes>
-          <attribute name="weight" value="bold"/>
-          <attribute name="scale" value="1.3"/>
-        </attributes>
+        <child>
+          <placeholder/>
+        </child>
         <style>
           <class name="popover-headerbar"/>
         </style>

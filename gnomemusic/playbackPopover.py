@@ -25,6 +25,7 @@ class PlaybackPopover(object):
 
         self.popover = Gtk.Popover()
         self.popover.set_relative_to(self.player.nowplaying_button)
+        self.popover.get_style_context().add_class('popover')
 
         self.box = self.ui.get_object('box_main')
         self.popover.add(self.box)
@@ -65,7 +66,7 @@ class PlaybackPopover(object):
         self.playlist = playlist
         self.current_track = current_track
 
-        self.headerbar.set_text(self.playlist_type)
+        self.headerbar.set_title(self.playlist_type)
 
         view_name = self.playlist_type
         if view_name == 'Album':

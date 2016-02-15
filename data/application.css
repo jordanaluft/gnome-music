@@ -195,5 +195,13 @@ GtkTreeView{
 
 .tracklist {
     background-color: transparent;
-    border: none
+    border: none;
+}
+
+.popover {
+    padding: 0;
+}
+
+.popover-headerbar {
+     background: transparent;
 }
