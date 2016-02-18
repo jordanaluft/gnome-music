@@ -129,7 +129,7 @@ class PlaybackPopover(object):
         return AlbumRow(song, self.get_current_track_name())
 
     def populate_default_tracklist(self, song):
-        return DefaultRow(song)
+        return DefaultRow(song, self.get_current_track_name())
 
     def get_current_artist(self):
         return self.player._currentArtist
@@ -140,12 +140,11 @@ class PlaybackPopover(object):
 
 class DefaultRow(Gtk.ListBoxRow):
 
-    def __init__(self, song):
+    def __init__(self, song, current_track):
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_resource(
             os.path.join(BASE_UI_RESOURCE, 'row_default.ui'))
-
 
         self.song = song
         self.track_name = self.ui.get_object('track_name')
@@ -160,6 +159,9 @@ class DefaultRow(Gtk.ListBoxRow):
 
         self.set_album_cover()
 
+        if song.track_name == current_track:
+            self.playing = self.ui.get_object('playing')
+            self.playing.set_from_icon_name("media-playback-start", 1)
 
     def set_album_cover(self):
         AlbumArtCache.lookup(
