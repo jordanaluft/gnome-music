@@ -174,7 +174,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="padding">16</property>
+                    <property name="padding">50</property>
                     <property name="pack_type">end</property>
                     <property name="position">3</property>
                   </packing>
@@ -201,6 +201,7 @@
                   <object class="GtkViewport" id="album_viewport">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_right">15</property>
                     <child>
                       <object class="GtkListBox" id="album_tracklist">
                         <property name="visible">True</property>
