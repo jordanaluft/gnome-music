@@ -1,3 +1,4 @@
+
 import os
 
 from gi.repository import Gio, GLib, GObject, Grl, Gtk
@@ -10,6 +11,7 @@ BASE_UI_RESOURCE = '/org/gnome/Music/playback_popover/'
 AlbumArtCache = AlbumArtCache.get_default()
 
 COVER_SIZE = (30, 30)
+BIG_COVER_SIZE = (175, 175)
 
 
 class PlaybackPopover(object):
@@ -86,6 +88,7 @@ class PlaybackPopover(object):
 
         album_track_name = self.ui.get_object('album_track_name')
         album_artist = self.ui.get_object('album_artist')
+        self.album_cover_view = self.ui.get_object('album_cover_image')
 
         album_track_name.set_markup(self.get_current_track_name())
         album_artist.set_markup(self.get_current_artist())
@@ -123,7 +126,7 @@ class PlaybackPopover(object):
             row.artist.set_markup('')
 
     def populate_album_tracklist(self, song):
-        return AlbumRow(song)
+        return AlbumRow(song, self.get_current_track_name())
 
     def populate_default_tracklist(self, song):
         return DefaultRow(song)
@@ -181,7 +184,7 @@ class DefaultRow(Gtk.ListBoxRow):
 
 class AlbumRow(Gtk.ListBoxRow):
 
-    def __init__(self, song):
+    def __init__(self, song, current_track):
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_resource(
@@ -194,6 +197,11 @@ class AlbumRow(Gtk.ListBoxRow):
         self.time.set_markup(song.time)
 
         self.box = self.ui.get_object('box')
+
+        if song.track_name == current_track:
+            self.playing = self.ui.get_object('playing')
+            self.playing.set_from_icon_name("media-playback-start", 1)
+
         self.add(self.box)
 
 
