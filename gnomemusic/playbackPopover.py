@@ -84,7 +84,7 @@ class PlaybackPopover(object):
     def update_album_view(self):
         self.album_model.remove_all()
         for music in self.playlist:
-            self.album_model.append(AlbumSong(music))
+            self.album_model.append(AlbumSong(music, self.player))
 
         self.set_album_cover()
 
@@ -219,8 +219,12 @@ class AlbumRow(Gtk.ListBoxRow):
         self.track_name = self.ui.get_object('track_name')
         self.time = self.ui.get_object('time')
 
-        self.track_name.set_markup(song.track_name)
-        self.time.set_markup(song.time)
+        if song.played:
+            self.track_name.set_markup('<span color=\'grey\'>%s</span>' % song.track_name)
+            self.time.set_markup('<span color=\'grey\'>%s</span>' % song.time)
+        else:
+            self.track_name.set_markup(song.track_name)
+            self.time.set_markup(song.time)
 
         self.box = self.ui.get_object('box')
 
@@ -253,12 +257,15 @@ class BaseSong(GObject.Object):
     def __init__(self, music):
         super().__init__()
 
+        self._music = music
         self.music = tuple(music)
         self.media = self.music[5]
 
         self.set_track_time()
         self.set_track_name()
         self.set_track_artist()
+
+        self.set_played()
 
     def set_track_artist(self):
         self.artist = self.media.get_string(
@@ -272,15 +279,28 @@ class BaseSong(GObject.Object):
     def set_track_time(self):
         pass
 
+    def set_played(self):
+        pass
+
 
 class AlbumSong(BaseSong):
 
+    def __init__(self, music, player):
+        self.player = player
+        super().__init__(music)
+
     def set_track_name(self):
-        self.track_name = self.music[0]
+        self.track_name = self.music[5].get_title()
 
     def set_track_time(self):
         self.time = self.music[1]
 
+    def set_played(self):
+        if self._music.path < self.player.currentTrack.get_path():
+            self.played = True
+
+        else:
+            self.played = False
 
 class Song(BaseSong):
 
