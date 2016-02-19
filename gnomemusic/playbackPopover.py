@@ -194,8 +194,8 @@ class DefaultRow(Gtk.ListBoxRow):
             COVER_SIZE[1],
             self.get_album_cover_callback,
             None,
-            self.song.artist,
-            self.song.media.get_title(),
+            self.song.media.get_artist(),
+            self.song.media.get_album(),
             first=False,
         )
 
