@@ -615,6 +615,7 @@ class Player(GObject.GObject):
         except:
             self._currentAlbum = album
 
+        self.currentAlbumData = (album, artist, media)
         self.coverImg.set_from_pixbuf(self._noArtworkIcon)
         self.cache.lookup(
             media, ART_SIZE, ART_SIZE, self._on_cache_lookup, None, artist, album)

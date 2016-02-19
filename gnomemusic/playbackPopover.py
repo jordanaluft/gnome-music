@@ -86,14 +86,36 @@ class PlaybackPopover(object):
         for music in self.playlist:
             self.album_model.append(AlbumSong(music))
 
+        self.set_album_cover()
+
         album_track_name = self.ui.get_object('album_track_name')
         album_artist = self.ui.get_object('album_artist')
-        self.album_cover_view = self.ui.get_object('album_cover_image')
+        self.current_album_cover = self.ui.get_object('album_cover_image')
 
         album_track_name.set_markup(self.get_current_track_name())
         album_artist.set_markup(self.get_current_artist())
 
         self.album_tracklist.show_all()
+
+    def set_album_cover(self):
+        self.album_name, self.album_artist, self.album_media = self.player.currentAlbumData
+        AlbumArtCache.lookup(
+            self.album_media,
+            BIG_COVER_SIZE[0],
+            BIG_COVER_SIZE[1],
+            self.get_album_cover_callback,
+            None,
+            self.album_artist,
+            self.album_name,
+        )
+
+    def get_album_cover_callback(self, cover, path, data=None):
+        if not cover:
+            cover = self.get_default_cover()
+        self.current_album_cover.set_from_pixbuf(cover)
+
+    def get_default_cover(self):
+        return AlbumArtCache.get_default_icon(BIG_COVER_SIZE[0], BIG_COVER_SIZE[1], False)
 
     def update_default_view(self):
         self.default_model.remove_all()
@@ -205,7 +227,6 @@ class AlbumRow(Gtk.ListBoxRow):
             self.playing.set_from_icon_name("media-playback-start", 1)
 
         self.add(self.box)
-
 
 class PlaylistRow(Gtk.Box):
 
