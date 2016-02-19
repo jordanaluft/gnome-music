@@ -125,7 +125,9 @@ class PlaybackPopover(object):
                 song = Song(music)
             elif self.playlist_type == 'Artist':
                 song = ArtistSong(music)
-            self.default_model.append(song)
+
+            if music.path >= self.player.currentTrack.get_path():
+                self.default_model.append(song)
 
         self.default_tracklist.show_all()
 
