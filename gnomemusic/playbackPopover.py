@@ -292,10 +292,10 @@ class BaseSong(GObject.Object):
         self.set_played()
 
     def set_track_artist(self):
-        self.artist = self.media.get_string(
+        self.artist =  GLib.markup_escape_text(self.media.get_string(
             Grl.METADATA_KEY_ARTIST) or \
             self.media.get_author() or \
-            'Unknown Artist'
+            'Unknown Artist')
 
     def set_track_name(self):
         pass
@@ -317,10 +317,10 @@ class AlbumSong(BaseSong):
         super().__init__(music)
 
     def set_track_name(self):
-        self.track_name = self.music[5].get_title()
+        self.track_name = GLib.markup_escape_text(self.music[5].get_title())
 
     def set_track_time(self):
-        self.time = self.music[1]
+        self.time =  GLib.markup_escape_text(self.music[1])
 
     def set_played(self):
         if self._music.path < self.player.currentTrack.get_path():
@@ -332,16 +332,16 @@ class AlbumSong(BaseSong):
 class Song(BaseSong):
 
     def set_track_name(self):
-        self.track_name = self.music[2]
+        self.track_name =  GLib.markup_escape_text(self.music[2])
 
 
 class ArtistSong(BaseSong):
 
     def set_track_name(self):
-        self.track_name = self.music[0]
+        self.track_name =  GLib.markup_escape_text(self.music[0])
 
 
 class PlaylistSong(BaseSong):
 
     def set_track_name(self):
-        self.track_name = self.music[2]
+        self.track_name =  GLib.markup_escape_text(self.music[2])
