@@ -233,7 +233,8 @@ class AlbumRow(Gtk.ListBoxRow):
 
         if song.track_name == current_track:
             self.playing = self.ui.get_object('playing')
-            self.playing.set_from_icon_name("media-playback-start", 1)
+            self.playing.set_from_icon_name('media-playback-start-symbolic', 1)
+            self.track_name.set_markup('<b>%s</b>' % song.track_name)
 
         self.add(self.box)
 
