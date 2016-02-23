@@ -210,3 +210,13 @@ GtkTreeView{
 .popover-headerbar {
      background: transparent;
 }
+
+.now-playing-box {
+    padding: 5;
+    margin-left: 5;
+}
+
+.now-playing-button {
+    padding: 0;
+    padding-left: 1;
+}
