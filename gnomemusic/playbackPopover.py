@@ -62,7 +62,7 @@ class PlaybackPopover(object):
         if self.popover.get_visible():
             self.popover.hide()
         else:
-            self.popover.show_all()
+            self.popover.show()
 
     def update_popover(self, player, playlist, current_track):
         self.playlist_type = player.playlistType
@@ -136,7 +136,6 @@ class PlaybackPopover(object):
         self.populate_playlist_tracklist(self.playlist_previous, self.player._get_previous_track())
         self.populate_playlist_tracklist(self.playlist_now, self.player.currentTrack)
         self.populate_playlist_tracklist(self.playlist_next, self.player._get_next_track())
-        self.playlist_box.show_all()
 
     def populate_playlist_tracklist(self, row, iter):
         if iter is not None:
@@ -147,9 +146,9 @@ class PlaybackPopover(object):
             row.track_name.set_markup(song.track_name)
             row.artist.set_markup(song.artist)
             row.set_album_cover(song.media)
+            row.show_all()
         else:
-            row.track_name.set_markup('No Track')
-            row.artist.set_markup('')
+            row.hide()
 
     def populate_album_tracklist(self, song):
         return AlbumRow(song, self.get_current_track_name())
@@ -265,7 +264,6 @@ class PlaylistRow(Gtk.Box):
             media.get_artist(),
             media.get_album(),
         )
-        print("1")
 
     def get_album_cover_callback(self, cover, path, data=None):
         if not cover:
