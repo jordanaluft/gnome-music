@@ -49,6 +49,7 @@ class PlaybackPopover(object):
 
     def create_playlist_box(self):
         self.playlist_box = self.ui.get_object('playlist_box_main')
+
         self.playlist_previous = PlaylistRow('Previous')
         self.playlist_now = PlaylistRow('Now')
         self.playlist_next = PlaylistRow('Next')
@@ -145,6 +146,7 @@ class PlaybackPopover(object):
 
             row.track_name.set_markup(song.track_name)
             row.artist.set_markup(song.artist)
+            row.set_album_cover(song.media)
         else:
             row.track_name.set_markup('No Track')
             row.artist.set_markup('')
@@ -234,6 +236,7 @@ class AlbumRow(Gtk.ListBoxRow):
 
         self.add(self.box)
 
+
 class PlaylistRow(Gtk.Box):
 
     def __init__(self, state):
@@ -245,11 +248,33 @@ class PlaylistRow(Gtk.Box):
         self.state = self.ui.get_object('state')
         self.track_name = self.ui.get_object('track_name')
         self.artist = self.ui.get_object('artist')
+        self.cover = self.ui.get_object('album_image')
 
         self.state.set_text(state)
 
         self.box = self.ui.get_object('box')
         self.add(self.box)
+
+    def set_album_cover(self, media):
+        AlbumArtCache.lookup(
+            media,
+            COVER_SIZE[0],
+            COVER_SIZE[1],
+            self.get_album_cover_callback,
+            None,
+            media.get_artist(),
+            media.get_album(),
+        )
+        print("1")
+
+    def get_album_cover_callback(self, cover, path, data=None):
+        if not cover:
+            cover = self.get_default_cover()
+        self.cover.set_from_pixbuf(cover)
+
+    def get_default_cover(self):
+        return AlbumArtCache.get_default_icon(COVER_SIZE[0], COVER_SIZE[1], False)
+
 
 
 class BaseSong(GObject.Object):
@@ -264,6 +289,7 @@ class BaseSong(GObject.Object):
         self.set_track_time()
         self.set_track_name()
         self.set_track_artist()
+        self.set_cover()
 
         self.set_played()
 
@@ -280,6 +306,9 @@ class BaseSong(GObject.Object):
         pass
 
     def set_played(self):
+        pass
+
+    def set_cover(self):
         pass
 
 
