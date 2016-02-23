@@ -185,7 +185,11 @@ GtkTreeView{
 .music-entry-tag.button,
 .music-entry-tag.button:hover,
 .music-entry-tag.button:active,
-.music-entry-tag.button:active:hover {
+.music-entry-tag.button:active:hover,
+.popover-row,
+.popover-row:hover,
+.popover-row:active,
+.popover-row:active:hover{
     background-color: transparent;
     background-image: none;
     box-shadow: none;
@@ -193,9 +197,10 @@ GtkTreeView{
     border-width: 0;
 }
 
-.tracklist {
+.tracklist, .tracklist * {
     background-color: transparent;
     border: none;
+    outline: none;
 }
 
 .popover {

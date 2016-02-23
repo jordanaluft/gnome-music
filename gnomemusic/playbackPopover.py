@@ -188,6 +188,8 @@ class DefaultRow(Gtk.ListBoxRow):
             self.playing = self.ui.get_object('playing')
             self.playing.set_from_icon_name("media-playback-start", 1)
 
+        self.get_style_context().add_class('popover-row')
+
     def set_album_cover(self):
         AlbumArtCache.lookup(
             self.song.media,
@@ -234,6 +236,8 @@ class AlbumRow(Gtk.ListBoxRow):
             self.playing.set_from_icon_name("media-playback-start", 1)
 
         self.add(self.box)
+
+        self.get_style_context().add_class('popover-row')
 
 
 class PlaylistRow(Gtk.Box):
