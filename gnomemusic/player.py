@@ -982,7 +982,6 @@ class Player(GObject.GObject):
         elif self.repeat == RepeatType.SONG:
             icon = 'media-playlist-repeat-song-symbolic'
 
-        self.repeatBtnImage.set_from_icon_name(icon, Gtk.IconSize.MENU)
         self.emit('repeat-mode-changed')
 
     @log
