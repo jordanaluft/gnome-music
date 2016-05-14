@@ -6,6 +6,7 @@ from gi.repository import Gio, GLib, GObject, Grl, Gtk
 from gnomemusic.albumArtCache import AlbumArtCache
 
 
+
 BASE_UI_RESOURCE = '/org/gnome/Music/playback_popover/'
 
 AlbumArtCache = AlbumArtCache.get_default()
@@ -17,6 +18,10 @@ BIG_COVER_SIZE = (175, 175)
 class PlaybackPopover(object):
 
     def __init__(self, player):
+        #this is here to prevent circular import
+        from gnomemusic.player import RepeatType
+        self.repeat_type = RepeatType
+
         self.ui = Gtk.Builder()
         self.ui.add_from_resource(os.path.join(BASE_UI_RESOURCE, 'popover.ui'))
 
@@ -46,6 +51,8 @@ class PlaybackPopover(object):
         self.stack = self.ui.get_object('stack')
 
         self.create_playlist_box()
+        self.build_repeat_buttons()
+
 
     def create_playlist_box(self):
         self.playlist_box = self.ui.get_object('playlist_box_main')
@@ -161,6 +168,26 @@ class PlaybackPopover(object):
 
     def get_current_track_name(self):
         return self.player._currentTitle
+
+    def build_repeat_buttons(self):
+        self.album_shuffle = self.ui.get_object('album_shuffle_button')
+        self.album_repeat = self.ui.get_object('album_repeat_button')
+        self.album_repeat_song = self.ui.get_object('album_repeat_song_button')
+
+        self.album_shuffle.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SHUFFLE)
+        self.album_repeat.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.ALL)
+        self.album_repeat_song.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SONG)
+
+        self.default_shuffle = self.ui.get_object('default_shuffle_button')
+        self.default_repeat = self.ui.get_object('default_repeat_button')
+        self.default_repeat_song = self.ui.get_object('default_repeat_song_button')
+
+        self.default_shuffle.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SHUFFLE)
+        self.default_repeat.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.ALL)
+        self.default_repeat_song.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SONG)
+
+    def on_clicked_repeat_button(self, button, repeat_type):
+        self.player.repeat = repeat_type
 
 
 class DefaultRow(Gtk.ListBoxRow):
