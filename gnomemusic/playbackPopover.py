@@ -123,7 +123,10 @@ class PlaybackPopover(object):
         self.current_album_cover.set_from_pixbuf(cover)
 
     def get_default_cover(self):
-        return AlbumArtCache.get_default_icon(BIG_COVER_SIZE[0], BIG_COVER_SIZE[1], False)
+        return AlbumArtCache.get_default_icon(
+            BIG_COVER_SIZE[0],
+            BIG_COVER_SIZE[1],
+            False)
 
     def update_default_view(self):
         self.default_model.remove_all()
@@ -140,9 +143,18 @@ class PlaybackPopover(object):
         self.default_tracklist.show_all()
 
     def update_playlist_view(self):
-        self.populate_playlist_tracklist(self.playlist_previous, self.player._get_previous_track())
-        self.populate_playlist_tracklist(self.playlist_now, self.player.currentTrack)
-        self.populate_playlist_tracklist(self.playlist_next, self.player._get_next_track())
+        self.populate_playlist_tracklist(
+            self.playlist_previous,
+            self.player._get_previous_track()
+        )
+        self.populate_playlist_tracklist(
+            self.playlist_now,
+            self.player.currentTrack
+        )
+        self.populate_playlist_tracklist(
+            self.playlist_next,
+            self.player._get_next_track()
+        )
 
     def populate_playlist_tracklist(self, row, iter):
         if iter is not None:
@@ -172,19 +184,65 @@ class PlaybackPopover(object):
     def build_repeat_buttons(self):
         self.album_shuffle = self.ui.get_object('album_shuffle_button')
         self.album_repeat = self.ui.get_object('album_repeat_button')
-        self.album_repeat_song = self.ui.get_object('album_repeat_song_button')
+        self.album_repeat_song = self.ui.get_object(
+            'album_repeat_song_button'
+        )
+        self.album_none = self.ui.get_object('album_none_button')
 
-        self.album_shuffle.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SHUFFLE)
-        self.album_repeat.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.ALL)
-        self.album_repeat_song.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SONG)
+        self.album_shuffle.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.SHUFFLE
+        )
+        self.album_repeat.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.ALL
+        )
+        self.album_repeat_song.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.SONG
+        )
+        self.album_none.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.NONE
+        )
 
-        self.default_shuffle = self.ui.get_object('default_shuffle_button')
-        self.default_repeat = self.ui.get_object('default_repeat_button')
-        self.default_repeat_song = self.ui.get_object('default_repeat_song_button')
+        self.default_shuffle = self.ui.get_object(
+            'default_shuffle_button'
+        )
+        self.default_repeat = self.ui.get_object(
+            'default_repeat_button'
+        )
+        self.default_repeat_song = self.ui.get_object(
+            'default_repeat_song_button'
+        )
+        self.default_none = self.ui.get_object(
+            'default_none_button'
+        )
 
-        self.default_shuffle.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SHUFFLE)
-        self.default_repeat.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.ALL)
-        self.default_repeat_song.connect('clicked', self.on_clicked_repeat_button, self.repeat_type.SONG)
+        self.default_shuffle.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.SHUFFLE
+        )
+        self.default_repeat.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.ALL
+        )
+        self.default_repeat_song.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.SONG
+        )
+        self.default_none.connect(
+            'clicked',
+            self.on_clicked_repeat_button,
+            self.repeat_type.NONE
+        )
 
     def on_clicked_repeat_button(self, button, repeat_type):
         self.player.repeat = repeat_type
@@ -250,8 +308,12 @@ class AlbumRow(Gtk.ListBoxRow):
         self.time = self.ui.get_object('time')
 
         if song.played:
-            self.track_name.set_markup('<span color=\'grey\'>%s</span>' % song.track_name)
-            self.time.set_markup('<span color=\'grey\'>%s</span>' % song.time)
+            self.track_name.set_markup(
+                '<span color=\'grey\'>%s</span>' % song.track_name
+            )
+            self.time.set_markup(
+                '<span color=\'grey\'>%s</span>' % song.time
+            )
         else:
             self.track_name.set_markup(song.track_name)
             self.time.set_markup(song.time)
@@ -260,8 +322,12 @@ class AlbumRow(Gtk.ListBoxRow):
 
         if song.track_name == current_track:
             self.playing = self.ui.get_object('playing')
-            self.playing.set_from_icon_name('media-playback-start-symbolic', 1)
-            self.track_name.set_markup('<b>%s</b>' % song.track_name)
+            self.playing.set_from_icon_name(
+                'media-playback-start-symbolic', 1
+            )
+            self.track_name.set_markup(
+                '<b>%s</b>' % song.track_name
+            )
 
         self.add(self.box)
 
