@@ -47,6 +47,7 @@ class PlaybackPopover(object):
         self.album_tracklist = self.ui.get_object('album_tracklist')
         self.album_tracklist.bind_model(
             self.album_model, self.populate_album_tracklist)
+        self.album_tracklist.connect('row-activated', self.on_clicked_song)
 
         self.stack = self.ui.get_object('stack')
 
@@ -246,6 +247,13 @@ class PlaybackPopover(object):
 
     def on_clicked_repeat_button(self, button, repeat_type):
         self.player.repeat = repeat_type
+
+    def on_clicked_song(self, listbox, row):
+        self.player.stop()
+        current_track = self.player.playlist.get_iter(row.get_index())
+        track = Gtk.TreeRowReference.new(self.player.playlist, self.player.playlist.get_path(current_track))
+        self.player.currentTrack = track
+        self.player.play()
 
 
 class DefaultRow(Gtk.ListBoxRow):
