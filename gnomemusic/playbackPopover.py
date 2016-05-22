@@ -42,7 +42,10 @@ class PlaybackPopover(object):
 
         self.default_tracklist = self.ui.get_object('default_tracklist')
         self.default_tracklist.bind_model(
-            self.default_model, self.populate_default_tracklist)
+            self.default_model,
+            self.populate_default_tracklist
+        )
+        self.default_tracklist.connect('row-activated', self.on_clicked_song)
 
         self.album_tracklist = self.ui.get_object('album_tracklist')
         self.album_tracklist.bind_model(
@@ -132,11 +135,11 @@ class PlaybackPopover(object):
     def update_default_view(self):
         self.default_model.remove_all()
 
-        for music in self.playlist:
+        for index, music in enumerate(self.playlist):
             if self.playlist_type == 'Songs':
-                song = Song(music)
+                song = Song(music, index)
             elif self.playlist_type == 'Artist':
-                song = ArtistSong(music)
+                song = ArtistSong(music, index)
 
             if music.path >= self.player.currentTrack.get_path():
                 self.default_model.append(song)
@@ -250,7 +253,11 @@ class PlaybackPopover(object):
 
     def on_clicked_song(self, listbox, row):
         self.player.stop()
-        current_track = self.player.playlist.get_iter(row.get_index())
+        try:
+            current_track = self.player.playlist.get_iter(row.song_index)
+        except AttributeError:
+            current_track = self.player.playlist.get_iter(row.get_index())
+
         track = Gtk.TreeRowReference.new(self.player.playlist, self.player.playlist.get_path(current_track))
         self.player.currentTrack = track
         self.player.play()
@@ -268,6 +275,7 @@ class DefaultRow(Gtk.ListBoxRow):
         self.track_name = self.ui.get_object('track_name')
         self.artist = self.ui.get_object('artist')
         self.cover = self.ui.get_object('image')
+        self.song_index = self.song.index
 
         self.track_name.set_markup(song.track_name)
         self.artist.set_markup(song.artist)
@@ -383,10 +391,11 @@ class PlaylistRow(Gtk.Box):
 
 class BaseSong(GObject.Object):
 
-    def __init__(self, music):
+    def __init__(self, music, index=None):
         super().__init__()
 
         self._music = music
+        self.index = index
         self.music = tuple(music)
         self.media = self.music[5]
 
