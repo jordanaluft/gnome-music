@@ -385,6 +385,7 @@ class Player(GObject.GObject):
                 else:
                     self.currentTrack = None
                 self.load(self.get_current_media())
+            self.emit('playback-status-changed')
         else:
             # Stop playback
             self.stop()
@@ -661,8 +662,8 @@ class Player(GObject.GObject):
         url = self.playlist.get_value(_iter, 5).get_url()
 
         # Skip remote tracks discovery
-        if url.startswith("http://"):
-            status = DiscoveryStatus.SUCCEEDED
+        if url.startswith('http://') or url.startswith('https://'):
+            return False
         elif status == DiscoveryStatus.PENDING:
             self.discover_item(nextSong, self._on_next_item_validated, _iter)
         elif status == DiscoveryStatus.FAILED:

@@ -1,6 +1,6 @@
 AC_PREREQ(2.63)
 AC_INIT([gnome-music],
-        [3.18.2],
+        [3.20.2],
         [https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-music],
         [gnome-music],
         [https://wiki.gnome.org/Apps/Music])
@@ -31,10 +31,10 @@ PKG_PROG_PKG_CONFIG([0.22])
 
 GLIB_GSETTINGS
 GOBJECT_INTROSPECTION_REQUIRE([1.35.9])
-PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= 3.13.2])
+PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= 3.19.3])
 PKG_CHECK_MODULES(MEDIAART, [libmediaart-2.0])
 
-TRACKER_MIN_VERSION=1.7.1
+TRACKER_MIN_VERSION=1.8.0
 PKG_CHECK_MODULES(TRACKER, [tracker-sparql-1.0 >= $TRACKER_MIN_VERSION])
 
 GLIB_COMPILE_RESOURCES=`$PKG_CONFIG --variable glib_compile_resources gio-2.0`

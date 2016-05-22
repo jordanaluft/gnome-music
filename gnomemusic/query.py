@@ -194,7 +194,7 @@ class Query():
     @staticmethod
     def songs(where_clause):
         query = '''
-    SELECT
+    SELECT DISTINCT
         rdf:type(?song)
         tracker:id (?song) AS ?id
         ?url
@@ -234,14 +234,13 @@ class Query():
         nfo:entryCounter(?playlist) AS ?childcount
         {
             %(where_clause)s
-            ?playlist a nmm:Playlist .
-            OPTIONAL {
-                ?playlist nie:url ?url ;
-                          tracker:available true .
-            FILTER (STRSTARTS (?url, '%(music_dir)s/'))
-            }
+            OPTIONAL { ?playlist nie:url ?url;
+                       tracker:available ?available . }
+            FILTER ( (STRSTARTS(?url, '%(music_dir)s/') && ?available)
+                      || !BOUND(nfo:belongsToContainer(?playlist)) )
+            OPTIONAL { ?playlist nao:hasTag ?tag }
         }
-    ORDER BY LCASE(?title)
+    ORDER BY !BOUND(?tag) LCASE(?title)
     '''.replace('\n', ' ').strip() % {
             'where_clause': where_clause.replace('\n', ' ').strip(),
             'music_dir': Query.MUSIC_URI
@@ -711,7 +710,7 @@ class Query():
           ?as nie:url ?url .
           FILTER (
             tracker:uri-is-descendant(
-              '%(music_dir)s', nie:url(?song)
+              '%(music_dir)s', ?url
             )
           )
         } ORDER BY DESC(?count) LIMIT 50
@@ -732,7 +731,7 @@ class Query():
             FILTER ( NOT EXISTS { ?song nie:usageCounter ?count .} )
             FILTER (
             tracker:uri-is-descendant(
-                '%(music_dir)s', nie:url(?song)
+                '%(music_dir)s', ?url
             )
         )
         } ORDER BY nfo:fileLastAccessed(?song) LIMIT 50
@@ -763,7 +762,7 @@ class Query():
                 FILTER ( EXISTS { ?song nie:usageCounter ?count .} )
                 FILTER (
                   tracker:uri-is-descendant(
-                    '%(music_dir)s', nie:url(?song)
+                    '%(music_dir)s', ?url
                   )
                 )
             } ORDER BY DESC(?last_played) LIMIT 50
@@ -795,7 +794,7 @@ class Query():
             FILTER ( ?added > '%(compare_date)s'^^xsd:dateTime )
             FILTER (
               tracker:uri-is-descendant(
-                '%(music_dir)s', nie:url(?song)
+                '%(music_dir)s', ?url
               )
             )
         } ORDER BY DESC(?added) LIMIT 50
@@ -817,7 +816,7 @@ class Query():
         ?as nie:url ?url .
         FILTER (
           tracker:uri-is-descendant(
-            '%(music_dir)s', nie:url(?song)
+            '%(music_dir)s', nie:url(?as)
           )
         )
     } ORDER BY DESC(tracker:added(?song))

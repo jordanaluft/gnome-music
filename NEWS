@@ -1,5 +1,81 @@
+Overview of changes in 3.20.2
+=============================
+
+Bugs fixed:
+ 705069 Port to Gio GDBUS API
+ 763618 Clarify jhbuild instructions in README
+ 755089 Emit playback-status-changed after playlist ends
+ 744820 Accept response on row-activated in Playlist Dialog
+ 765598 Bump Gtk+ minimum version to 3.19.3
+ 761961 Stop the player when destroying window
+
+Translations updated:
+ Swedish
+ Friulian
+ Esperanto
+ Brazilian Portuguese
+ Occitan
+
+Overview of changes in 3.20.0
+=============================
+
+Translations updated:
+ Danish
+ Hungarian
+
+Overview of changes in 3.19.92
+==============================
+
+Bugs fixed:
+ 762821 Update Grilo plugin ranks to 0.3 format
+ 761941 Fix Pango critical warnings on searchbar
+ 761890 Check if visible child is ArtistsAlbumsWidget on search toggle
+ 763304 Don't assume that nmm:MusicPieces will have a nie:url in playlists
+ 744821 Properly de/activate select button on PlaylistDialog when navigating w/ arrow keys
+ 744831 Fix crash while deleting multiple playlists
+ a173f2 Update libgd
+
+Translations updated:
+ Occitan
+ Korean
+ Slovenian
+ French
+
+Special thanks to the new contributors:
+ Gaurav Narula
+ Marinus Schraal
+ Prashant Tyagi
+ Saiful B. Khan
+
+Overview of changes in 3.19.91
+==============================
+
+Bugs fixed:
+ 744829 No more duplicate playlists on the sidebar
+ 762406 More Grilo 0.3 transition fixes
+ 762265 No more notifications on track changes
+
+Translations updated:
+ Slovak
+ Occitan
+ Ukrainian
+
+Overview of changes in 3.19.90
+==============================
+
+Bugs fixed:
+ 761173 Update tracker queries to sparql 1.1 syntax
+ 760170 Fix check button appearance on AlbumWidget
+ 760170 Fix check buttons appearance in Songs and Playlist view
+ 736463 Reposition the scrollbar in the search window
+ 760171 Resized songs list for better viewing in large window
+
+Translations updated:
+ Latvian
+ Bulgarian
+
 Overview of changes in 3.19.4
-============================
+=============================
 
 Bugs fixed:
  Let GtkApplication automatically load the app-menu

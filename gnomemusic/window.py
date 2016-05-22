@@ -76,6 +76,7 @@ class Window(Gtk.ApplicationWindow):
 
         self.prev_view = None
         self.curr_view = None
+        self.pl_todelete_notification = None
 
         size_setting = self.settings.get_value('window-size')
         if isinstance(size_setting[0], int) and isinstance(size_setting[1], int):
@@ -345,6 +346,11 @@ class Window(Gtk.ApplicationWindow):
 
     @log
     def _init_playlist_removal_notification(self):
+        if self.pl_todelete_notification:
+            self.views[3].really_delete = False
+            self.pl_todelete_notification.destroy()
+            Views.playlists.delete_playlist(self.views[3].pl_todelete)
+
         self.notification = Gd.Notification()
         self.notification.set_timeout(20)
 
@@ -360,14 +366,14 @@ class Window(Gtk.ApplicationWindow):
 
         self.notification.show_all()
         self._overlay.add_overlay(self.notification)
-
-        self.notification.deletion_index = self.views[3].current_playlist_index
+        self.pl_todelete_notification = self.notification
 
         self.notification.connect("dismissed", self._playlist_removal_notification_dismissed)
         undo_button.connect("clicked", self._undo_deletion)
 
     @log
     def _playlist_removal_notification_dismissed(self, widget):
+        self.pl_todelete_notification = None
         if self.views[3].really_delete:
             Views.playlists.delete_playlist(self.views[3].pl_todelete)
         else:
@@ -377,7 +383,7 @@ class Window(Gtk.ApplicationWindow):
     def _undo_deletion(self, widget):
         self.views[3].really_delete = False
         self.notification.dismiss()
-        self.views[3].undo_playlist_deletion(self.notification.deletion_index)
+        self.views[3].undo_playlist_deletion()
 
     @log
     def _on_key_press(self, widget, event):
@@ -422,6 +428,7 @@ class Window(Gtk.ApplicationWindow):
 
     @log
     def _notify_mode_disconnect(self, data=None):
+        self.player.Stop()
         self._stack.disconnect(self._on_notify_model_id)
 
     @log
@@ -461,7 +468,8 @@ class Window(Gtk.ApplicationWindow):
                 # We should get back to the view before the search
                 self._stack.set_visible_child(self.views[4].previous_view)
             elif (self.views[4].previous_view == self.views[0] and
-                 self.curr_view.get_visible_child() != self.curr_view._albumWidget):
+                 self.curr_view.get_visible_child() != self.curr_view._albumWidget and
+                 self.curr_view.get_visible_child() != self.curr_view._artistAlbumsWidget):
                 self._stack.set_visible_child(self.views[0])
 
             if self.toolbar._selectionMode:

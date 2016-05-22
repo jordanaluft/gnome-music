@@ -739,7 +739,9 @@ class PlaylistDialog():
         self.dialog_box.set_transient_for(parent)
 
         self.view = self.ui.get_object('treeview1')
+        self.view.set_activate_on_single_click(False)
         self.selection = self.ui.get_object('treeview-selection1')
+        self.selection.connect('changed', self._on_selection_changed)
         self._add_list_renderers()
         self.view.connect('row-activated', self._on_item_activated)
 
@@ -826,6 +828,14 @@ class PlaylistDialog():
         _iter = self.model.get_iter(path)
         if self.model.get_value(_iter, 1):
             self.view.set_cursor(path, column, True)
+        else:
+            self.dialog_box.response(Gtk.ResponseType.ACCEPT)
+
+    @log
+    def _on_selection_changed(self, selection):
+        model, _iter = self.selection.get_selected()
+
+        if _iter == None or self.model.get_value(_iter, 1):
             self._select_button.set_sensitive(False)
         else:
             self._select_button.set_sensitive(True)
@@ -885,7 +895,7 @@ class CellRendererClickablePixbuf(Gtk.CellRendererPixbuf):
             if self.show_star == 1:
                 self.set_property('icon_name', self.starIcon)
             elif self.show_star == 0:
-	            self.set_property('icon_name', self.nonStarIcon)
+                self.set_property('icon_name', self.nonStarIcon)
             else:
                 self.set_property('icon_name', '')
             self.show_star = value
